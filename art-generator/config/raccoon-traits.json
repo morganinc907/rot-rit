@@ -1,0 +1,111 @@
+{
+  "collection": {
+    "name": "Cultist Raccoons",
+    "description": "Mischievous raccoons that have joined the dark cult",
+    "baseUri": "ipfs://REPLACE_WITH_IPFS_HASH/",
+    "totalSupply": 1000
+  },
+  "layers": [
+    {
+      "name": "backgrounds",
+      "displayName": "Background",
+      "traits": [
+        { "name": "Dark Forest", "weight": 20, "filename": "dark_forest.png" },
+        { "name": "Ritual Circle", "weight": 15, "filename": "ritual_circle.png" },
+        { "name": "Cemetery", "weight": 15, "filename": "cemetery.png" },
+        { "name": "Blood Moon", "weight": 10, "filename": "blood_moon.png" },
+        { "name": "Void", "weight": 10, "filename": "void.png" },
+        { "name": "Candlelit Chamber", "weight": 10, "filename": "candle_chamber.png" },
+        { "name": "Foggy Swamp", "weight": 8, "filename": "foggy_swamp.png" },
+        { "name": "Ancient Ruins", "weight": 7, "filename": "ancient_ruins.png" },
+        { "name": "Portal", "weight": 3, "filename": "portal.png" },
+        { "name": "Hellscape", "weight": 2, "filename": "hellscape.png" }
+      ]
+    },
+    {
+      "name": "bodies",
+      "displayName": "Body",
+      "traits": [
+        { "name": "Gray Fur", "weight": 30, "filename": "gray_fur.png" },
+        { "name": "Brown Fur", "weight": 25, "filename": "brown_fur.png" },
+        { "name": "Black Fur", "weight": 20, "filename": "black_fur.png" },
+        { "name": "Albino", "weight": 10, "filename": "albino.png" },
+        { "name": "Scarred", "weight": 8, "filename": "scarred.png" },
+        { "name": "Tattooed", "weight": 5, "filename": "tattooed.png" },
+        { "name": "Skeletal", "weight": 2, "filename": "skeletal.png" }
+      ]
+    },
+    {
+      "name": "eyes",
+      "displayName": "Eyes",
+      "traits": [
+        { "name": "Normal", "weight": 30, "filename": "normal_eyes.png" },
+        { "name": "Red Glow", "weight": 20, "filename": "red_glow.png" },
+        { "name": "Purple Glow", "weight": 15, "filename": "purple_glow.png" },
+        { "name": "Blind", "weight": 10, "filename": "blind.png" },
+        { "name": "Third Eye", "weight": 10, "filename": "third_eye.png" },
+        { "name": "X Eyes", "weight": 8, "filename": "x_eyes.png" },
+        { "name": "Demon Eyes", "weight": 5, "filename": "demon_eyes.png" },
+        { "name": "Empty Sockets", "weight": 2, "filename": "empty_sockets.png" }
+      ]
+    },
+    {
+      "name": "mouths",
+      "displayName": "Mouth",
+      "traits": [
+        { "name": "Grin", "weight": 25, "filename": "grin.png" },
+        { "name": "Fangs", "weight": 20, "filename": "fangs.png" },
+        { "name": "Drooling", "weight": 15, "filename": "drooling.png" },
+        { "name": "Stitched", "weight": 15, "filename": "stitched.png" },
+        { "name": "Blood Drip", "weight": 10, "filename": "blood_drip.png" },
+        { "name": "Smoking", "weight": 8, "filename": "smoking.png" },
+        { "name": "Tongue Out", "weight": 5, "filename": "tongue_out.png" },
+        { "name": "Gold Teeth", "weight": 2, "filename": "gold_teeth.png" }
+      ]
+    },
+    {
+      "name": "accessories",
+      "displayName": "Accessory",
+      "optional": true,
+      "traits": [
+        { "name": "None", "weight": 30, "filename": "none.png" },
+        { "name": "Cult Robe", "weight": 20, "filename": "cult_robe.png" },
+        { "name": "Bone Necklace", "weight": 15, "filename": "bone_necklace.png" },
+        { "name": "Pentagram Chain", "weight": 10, "filename": "pentagram_chain.png" },
+        { "name": "Dagger", "weight": 10, "filename": "dagger.png" },
+        { "name": "Spell Book", "weight": 8, "filename": "spell_book.png" },
+        { "name": "Voodoo Doll", "weight": 5, "filename": "voodoo_doll.png" },
+        { "name": "Golden Skull", "weight": 2, "filename": "golden_skull.png" }
+      ]
+    },
+    {
+      "name": "hats",
+      "displayName": "Headwear",
+      "optional": true,
+      "traits": [
+        { "name": "None", "weight": 35, "filename": "none.png" },
+        { "name": "Cult Hood", "weight": 20, "filename": "cult_hood.png" },
+        { "name": "Horns", "weight": 15, "filename": "horns.png" },
+        { "name": "Witch Hat", "weight": 10, "filename": "witch_hat.png" },
+        { "name": "Skull Cap", "weight": 8, "filename": "skull_cap.png" },
+        { "name": "Crown of Thorns", "weight": 7, "filename": "crown_thorns.png" },
+        { "name": "Halo of Fire", "weight": 3, "filename": "halo_fire.png" },
+        { "name": "Ancient Crown", "weight": 2, "filename": "ancient_crown.png" }
+      ]
+    }
+  ],
+  "specialEditions": [
+    {
+      "id": 666,
+      "name": "The Chosen One",
+      "description": "The leader of the raccoon cult",
+      "filename": "chosen_one.png",
+      "attributes": [
+        { "trait_type": "Background", "value": "Hellscape" },
+        { "trait_type": "Body", "value": "Shadow Form" },
+        { "trait_type": "Eyes", "value": "All-Seeing" },
+        { "trait_type": "Special", "value": "Legendary" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "extends": [
+    "eslint:recommended"
+  ],
+  "env": {
+    "node": true,
+    "es6": true,
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "Literal[value=/^0x[a-fA-F0-9]{40}$/]",
+        "message": "❌ HARDCODED ADDRESS DETECTED! Use generated addresses from packages/addresses instead. Import: import addresses from '../../../packages/addresses/addresses.json'"
+      }
+    ],
+    "no-restricted-patterns": [
+      "error",
+      {
+        "pattern": "0x[a-fA-F0-9]{40}",
+        "message": "❌ HARDCODED ADDRESS IN STRING! Use generated addresses from packages/addresses instead."
+      }
+    ]
+  }
+}

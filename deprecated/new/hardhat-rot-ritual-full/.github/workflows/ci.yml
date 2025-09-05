@@ -1,0 +1,62 @@
+name: Contracts CI
+
+on:
+  push:
+    branches: [ main, master, develop, dev, feature/** ]
+  pull_request:
+    branches: [ main, master, develop, dev ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Compile
+        run: npx hardhat compile
+
+      - name: Run unit tests (with gas report)
+        env:
+          REPORT_GAS: "true"
+        run: npx hardhat test
+
+      - name: Upload gas report (if present)
+        uses: actions/upload-artifact@v4
+        with:
+          name: gas-report
+          path: gasReporterOutput.txt
+          if-no-files-found: ignore
+
+      - name: Coverage
+        run: npx hardhat coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+          if-no-files-found: warn
+
+      - name: Archive ABIs
+        run: |
+          mkdir -p abis
+          find artifacts -name "*.json" -path "*/contracts/*" -print0 | xargs -0 -I {} bash -lc 'jq .abi {} > abis/$(basename {}) || true'
+        shell: bash
+
+      - name: Upload ABIs
+        uses: actions/upload-artifact@v4
+        with:
+          name: abis
+          path: abis
+          if-no-files-found: warn

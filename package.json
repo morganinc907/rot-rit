@@ -1,0 +1,28 @@
+{
+  "name": "rot-ritual-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "./scripts/dev-workflow.sh --dev",
+    "build:abis": "./scripts/dev-workflow.sh",
+    "clear:cache": "./scripts/dev-workflow.sh --clear-cache",
+    "check:abis": "node scripts/check-abis.mjs",
+    "check:no-stale-abis": "node scripts/check-no-stale-abis.mjs",
+    "contracts:build": "forge build",
+    "abis:build": "node scripts/build-abis.mjs",
+    "dev:web": "npm run contracts:build && npm run abis:build && npm run start:web",
+    "start:web": "npm run dev -w apps/web",
+    "build:contracts": "cd packages/contracts && forge build",
+    "extract:abis": "node scripts/build-abis.mjs",
+    "verify:system": "npm run build:abis && npm run check:abis && npm run check:no-stale-abis",
+    "check:contract-health": "./scripts/check-contract-health.sh",
+    "check:frontend-integrity": "node scripts/check-frontend-integrity.js",
+    "check:noaddrs": "./scripts/check-no-old-address.sh",
+    "ci:validate": "npm run check:contract-health && npm run check:frontend-integrity && npm run check:noaddrs"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,322 @@
+/* RPG Inventory Style */
+.crypt-container {
+  display: grid;
+  grid-template-columns: 1fr 400px 350px;
+  gap: 20px;
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a0f1a 100%);
+  font-family: 'Courier New', monospace;
+}
+
+/* Inventory Panel - Left Side */
+.inventory-panel {
+  background: rgba(20, 15, 25, 0.95);
+  border: 2px solid #4a3958;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: inset 0 0 20px rgba(138, 43, 226, 0.1);
+}
+
+/* Tab System */
+.inventory-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(74, 57, 88, 0.3);
+  border: 1px solid #4a3958;
+  color: #a89bb0;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.tab:hover {
+  background: rgba(74, 57, 88, 0.5);
+  color: #d4c5db;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #4a3958 0%, #6b4c7a 100%);
+  color: #fff;
+  border-color: #8a2be2;
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+}
+
+.tab-icon {
+  font-size: 18px;
+}
+
+/* Grid Container */
+.inventory-grid-container {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #2a1f35;
+  border-radius: 4px;
+  padding: 16px;
+  min-height: 480px;
+}
+
+/* Inventory Grid - Classic RPG Style */
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 4px;
+  aspect-ratio: 8/6;
+}
+
+.inventory-slot {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #1a1320 0%, #2a1f35 100%);
+  border: 2px solid #3a2845;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.inventory-slot:hover {
+  border-color: #8a2be2;
+  background: linear-gradient(135deg, #2a1f35 0%, #3a2845 100%);
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+}
+
+.inventory-slot.selected {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, #3a2845 0%, #4a3958 100%);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.inventory-slot.empty {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.inventory-slot.empty:hover {
+  transform: none;
+  border-color: #3a2845;
+  box-shadow: none;
+}
+
+/* Item Display */
+.inventory-item {
+  width: 90%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.inventory-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* Item Badges */
+.item-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  border: 1px solid;
+}
+
+.item-badge.common { border-color: #808080; }
+.item-badge.uncommon { border-color: #00ff00; }
+.item-badge.rare { border-color: #0080ff; }
+.item-badge.legendary { border-color: #ff8000; }
+.item-badge.mythic { border-color: #ff00ff; }
+
+/* Quantity Badge */
+.item-quantity {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffd700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #ffd700;
+}
+
+/* State Indicators */
+.state-indicator {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #000;
+}
+
+.state-indicator.normal { background: #00ff00; }
+.state-indicator.cult { background: #ff00ff; }
+.state-indicator.dead { background: #ff0000; }
+
+/* Ritual Preparation Area */
+.ritual-preparation {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #4a3958;
+  border-radius: 4px;
+}
+
+.ritual-preparation h3 {
+  color: #d4c5db;
+  margin-bottom: 12px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.preparation-slots {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.raccoon-slot {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #2a1f35 0%, #3a2845 100%);
+  border: 3px solid #ffd700;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.relic-slots {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.relic-slot {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #1a1320 0%, #2a1f35 100%);
+  border: 2px solid #4a3958;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.empty-slot {
+  color: #4a3958;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Character Display Panel */
+.character-display-panel {
+  background: rgba(20, 15, 25, 0.95);
+  border: 2px solid #4a3958;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Stats Panel */
+.stats-panel {
+  background: rgba(20, 15, 25, 0.95);
+  border: 2px solid #4a3958;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.ritual-button, .simulate-button {
+  padding: 16px;
+  border: 2px solid #8a2be2;
+  background: linear-gradient(135deg, #4a3958 0%, #6b4c7a 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 4px;
+}
+
+.ritual-button:hover:not(:disabled),
+.simulate-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #6b4c7a 0%, #8a2be2 100%);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+  transform: translateY(-2px);
+}
+
+.ritual-button:disabled,
+.simulate-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Glow Effects for Rare Items */
+@keyframes legendary-glow {
+  0% { box-shadow: 0 0 5px #ff8000; }
+  50% { box-shadow: 0 0 20px #ff8000, 0 0 30px #ff8000; }
+  100% { box-shadow: 0 0 5px #ff8000; }
+}
+
+@keyframes mythic-glow {
+  0% { box-shadow: 0 0 5px #ff00ff; }
+  50% { box-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+  100% { box-shadow: 0 0 5px #ff00ff; }
+}
+
+.inventory-slot.legendary {
+  animation: legendary-glow 2s infinite;
+}
+
+.inventory-slot.mythic {
+  animation: mythic-glow 2s infinite;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Cult Raccoon",
+  "description": "A raccoon that has joined the dark cult and embraced the shadows. Its eyes glow with otherworldly power.",
+  "image": "ipfs://bafybeifsiog2puwlxfhszxjs3ttqi5r6y2zzdwhvswwanzehasc7tj3sf4/cult.png",
+  "attributes": [
+    {
+      "trait_type": "State",
+      "value": "Cult"
+    },
+    {
+      "trait_type": "Power Level",
+      "value": "Enhanced"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Glowing"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Transformed"
+    }
+  ]
+}

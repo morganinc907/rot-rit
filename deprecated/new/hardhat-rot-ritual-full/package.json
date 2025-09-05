@@ -1,0 +1,30 @@
+{
+  "name": "hardhat-rot-ritual-full",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "clean": "hardhat clean",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:net": "hardhat run scripts/deploy.js --network $NETWORK",
+    "verify": "hardhat run scripts/verify.js --network $NETWORK",
+    "seed": "hardhat run scripts/seed.js --network $NETWORK",
+    "smoke": "hardhat run scripts/smoke.js --network localhost",
+    "gas": "REPORT_GAS=true hardhat test",
+    "coverage": "hardhat coverage",
+    "coverage:ci": "hardhat coverage --testfiles 'test/**/*.test.js' --temp build/coverage"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "dotenv": "^16.4.1",
+    "hardhat": "^2.22.4",
+    "hardhat-gas-reporter": "^1.0.10",
+    "solidity-coverage": "^0.8.8",
+    "fast-check": "^3.15.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.6"
+  }
+}

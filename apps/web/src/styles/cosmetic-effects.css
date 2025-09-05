@@ -1,0 +1,245 @@
+/* Dynamic Cosmetic States - AAA Visual Effects */
+
+/* Base animations for different rarity tiers */
+@keyframes subtle-pulse {
+  0%, 100% { 
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.01);
+  }
+}
+
+@keyframes gentle-glow {
+  0%, 100% { 
+    filter: brightness(1) drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+  }
+  50% { 
+    filter: brightness(1.05) drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
+  }
+}
+
+@keyframes mystical-aura {
+  0%, 100% { 
+    filter: brightness(1.05) drop-shadow(0 0 12px rgba(139, 92, 246, 0.4));
+    transform: scale(1);
+  }
+  33% { 
+    filter: brightness(1.1) drop-shadow(0 0 18px rgba(139, 92, 246, 0.6));
+    transform: scale(1.008);
+  }
+  66% { 
+    filter: brightness(1.08) drop-shadow(0 0 15px rgba(139, 92, 246, 0.5));
+    transform: scale(1.005);
+  }
+}
+
+@keyframes divine-radiance {
+  0%, 100% { 
+    filter: brightness(1.1) contrast(1.05) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+    transform: scale(1);
+  }
+  25% { 
+    filter: brightness(1.15) contrast(1.08) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+    transform: scale(1.01);
+  }
+  50% { 
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+    transform: scale(1.015);
+  }
+  75% { 
+    filter: brightness(1.15) contrast(1.08) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+    transform: scale(1.008);
+  }
+}
+
+/* Holographic shimmer effect for Mythic cosmetics */
+@keyframes holographic-shimmer {
+  0% { 
+    background-position: -200% 0;
+  }
+  100% { 
+    background-position: 200% 0;
+  }
+}
+
+/* Particle-like floating effects */
+@keyframes floating-sparkles {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.8;
+  }
+  33% { 
+    transform: translateY(-5px) rotate(120deg);
+    opacity: 1;
+  }
+  66% { 
+    transform: translateY(-2px) rotate(240deg);
+    opacity: 0.9;
+  }
+}
+
+/* Energy field animation for high-tier cosmetics */
+@keyframes energy-field {
+  0% { 
+    border-radius: 50%;
+    transform: rotate(0deg) scale(1);
+    opacity: 0.4;
+  }
+  50% { 
+    border-radius: 30%;
+    transform: rotate(180deg) scale(1.05);
+    opacity: 0.7;
+  }
+  100% { 
+    border-radius: 50%;
+    transform: rotate(360deg) scale(1);
+    opacity: 0.4;
+  }
+}
+
+/* Rarity-specific cosmetic classes */
+.cosmetic-common {
+  /* Clean, sharp rendering - no effects */
+}
+
+.cosmetic-uncommon {
+  animation: subtle-pulse 4s ease-in-out infinite;
+}
+
+.cosmetic-rare {
+  animation: gentle-glow 3s ease-in-out infinite;
+}
+
+.cosmetic-legendary {
+  animation: mystical-aura 4s ease-in-out infinite;
+  position: relative;
+}
+
+.cosmetic-legendary::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+  animation: energy-field 6s linear infinite;
+  z-index: -1;
+}
+
+.cosmetic-mythic {
+  animation: divine-radiance 3s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmetic-mythic::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 215, 0, 0.3),
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 215, 0, 0.3),
+    transparent
+  );
+  background-size: 400% 100%;
+  animation: holographic-shimmer 2s linear infinite;
+  z-index: -1;
+}
+
+.cosmetic-mythic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  animation: floating-sparkles 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Hover state enhancements */
+.cosmetic-preview:hover .cosmetic-rare {
+  animation-duration: 2s;
+}
+
+.cosmetic-preview:hover .cosmetic-legendary {
+  animation-duration: 2.5s;
+  filter: brightness(1.15) saturate(1.1);
+}
+
+.cosmetic-preview:hover .cosmetic-mythic {
+  animation-duration: 2s;
+  filter: brightness(1.25) saturate(1.2) contrast(1.1);
+}
+
+/* Mobile optimizations - reduced effects for performance */
+@media (max-width: 768px) {
+  .cosmetic-legendary::before,
+  .cosmetic-mythic::before,
+  .cosmetic-mythic::after {
+    display: none;
+  }
+  
+  .cosmetic-legendary,
+  .cosmetic-mythic {
+    animation-duration: 6s;
+  }
+}
+
+/* Performance mode - user can toggle this class to reduce effects */
+.performance-mode .cosmetic-legendary::before,
+.performance-mode .cosmetic-mythic::before,
+.performance-mode .cosmetic-mythic::after {
+  display: none;
+}
+
+.performance-mode .cosmetic-legendary,
+.performance-mode .cosmetic-mythic {
+  animation: none;
+  filter: brightness(1.05);
+}
+
+/* Blend mode utilities for different cosmetic types */
+.cosmetic-color-slot {
+  mix-blend-mode: multiply;
+}
+
+.cosmetic-glow-effect {
+  mix-blend-mode: screen;
+}
+
+.cosmetic-shadow-effect {
+  mix-blend-mode: overlay;
+}
+
+/* Preview state enhancements */
+.cosmetic-preview-active {
+  position: relative;
+}
+
+.cosmetic-preview-active::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #00FFCC;
+  border-radius: inherit;
+  animation: subtle-pulse 1.5s ease-in-out infinite;
+  z-index: 10;
+}
+
+/* Loading state shimmer */
+.cosmetic-loading {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: holographic-shimmer 1.5s ease-in-out infinite;
+}

@@ -1,0 +1,171 @@
+# ===================================
+# ROT RITUAL - MONOREPO .GITIGNORE
+# ===================================
+
+# ===== NODE.JS & NPM =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.yarn/
+.pnp.*
+.yarn-integrity
+
+# ===== ENVIRONMENT & SECRETS =====
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.example.local
+
+# Private keys (CRITICAL SECURITY)
+*.pem
+*.key
+.private
+secrets/
+PRIVATE_KEY=*
+
+# ===== FOUNDRY & HARDHAT =====
+# Foundry
+out/
+cache/
+broadcast/
+.forge-cache/
+
+# Hardhat
+artifacts/
+cache/
+deployments/
+addresses.json
+.openzeppelin/
+
+# Contract compilation
+build/
+contracts/build/
+
+# ===== VITE & BUILD =====
+# Vite
+dist/
+dist-ssr/
+*.local
+
+# Build outputs
+build/
+.next/
+.nuxt/
+.vite/
+.vitepress/cache
+.vitepress/dist
+
+# ===== TESTING =====
+coverage/
+.nyc_output/
+.coverage/
+*.lcov
+
+# ===== DEVELOPMENT =====
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.temp/
+.cache/
+.parcel-cache/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== OS & SYSTEM =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ===== MONOREPO SPECIFIC =====
+# Workspace dependencies
+packages/*/node_modules/
+apps/*/node_modules/
+
+# Workspace build outputs  
+packages/*/dist/
+apps/*/dist/
+packages/*/build/
+apps/*/build/
+
+# ===== SECURITY & KEYS =====
+# Never commit these patterns
+*PRIVATE_KEY*
+*private_key*
+*SECRET_KEY*
+*secret_key*
+*.mnemonic
+wallet.json
+keystore/
+
+# ===== GENERATED FILES =====
+# Documentation
+docs/build/
+docs/.vitepress/cache
+
+# Type definitions
+*.d.ts.map
+*.tsbuildinfo
+
+# Lock files (choose one strategy)
+# Option 1: Keep lock files (recommended for reproducible builds)
+# Option 2: Ignore lock files (uncomment if needed)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ===== DEPLOYMENT =====
+.vercel/
+.netlify/
+deploy/
+deployment/
+
+# ===== BLOCKCHAIN SPECIFIC =====
+# Never commit deployed addresses in development
+*-addresses.json
+deployment-info.json
+deploy-info.json
+
+# Gas reports
+gas-report.txt
+.gas-report
+
+# Contract flattened files
+flattened/
+flatten/
+
+# ===== LOGGING =====
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ===== TEMPORARY =====
+tmp/
+temp/
+.tmp/
+.temp/
+
+# ===== CONTRACT VERIFICATION =====
+# Etherscan verification cache
+.etherscan/
+verify/
+verification/
+
+# ===== END OF GITIGNORE =====

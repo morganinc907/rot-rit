@@ -1,0 +1,9107 @@
+{
+  "Cosmetics": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_baseTypeURI",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_boundBaseURI",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "needed",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC1155InsufficientBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "approver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidApprover",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "idsLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "valuesLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC1155InvalidArrayLength",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidOperator",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155MissingApprovalForAll",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "baseTypeId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "boundId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CosmeticBound",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "boundId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CosmeticEquipped",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "typeId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "CosmeticMinted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "typeId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "rarity",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        }
+      ],
+      "name": "CosmeticTypeCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "boundId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CosmeticUnequipped",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "TransferBatch",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "TransferSingle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "URI",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "accounts",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "balanceOfBatch",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "baseTypeURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "typeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "bindToRaccoon",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "boundBaseType",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "boundBaseURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "boundToRaccoon",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "cosmeticTypes",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "previewLayerURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint8",
+          "name": "rarity",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "monthlySetId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxSupply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentSupply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "active",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "previewLayerURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint8",
+          "name": "rarity",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "monthlySetId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxSupply",
+          "type": "uint256"
+        }
+      ],
+      "name": "createCosmeticType",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "typeId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentMonthlySetId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "itemIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "equipCosmetic",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "boundId",
+          "type": "uint256"
+        }
+      ],
+      "name": "equipCosmeticById",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "typeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getCosmeticInfo",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "previewLayerURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint8",
+          "name": "rarity",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "monthlySetId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "active",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEquippedBoundIds",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "head",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "face",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "body",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "fur",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "background",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEquippedCosmetics",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "headTypeId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "faceTypeId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "bodyTypeId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "furTypeId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "backgroundTypeId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        }
+      ],
+      "name": "getEquippedForSlot",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "boundId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "baseTypeId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "equippedIndexPlus1",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEquippedPacked",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "packed",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "raccoonIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getEquippedPackedMany",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "packs",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEquippedSummary",
+      "outputs": [
+        {
+          "internalType": "uint256[5]",
+          "name": "boundIds",
+          "type": "uint256[5]"
+        },
+        {
+          "internalType": "uint256[5]",
+          "name": "baseTypeIds",
+          "type": "uint256[5]"
+        },
+        {
+          "internalType": "uint256[5]",
+          "name": "equippedIndexPlus1",
+          "type": "uint256[5]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEquippedSummaryStruct",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256[5]",
+              "name": "boundIds",
+              "type": "uint256[5]"
+            },
+            {
+              "internalType": "uint256[5]",
+              "name": "baseTypeIds",
+              "type": "uint256[5]"
+            },
+            {
+              "internalType": "uint256[5]",
+              "name": "equippedIndexPlus1",
+              "type": "uint256[5]"
+            }
+          ],
+          "internalType": "struct CosmeticsV2.EquippedSummary",
+          "name": "s",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getWardrobeCounts",
+      "outputs": [
+        {
+          "internalType": "uint256[5]",
+          "name": "counts",
+          "type": "uint256[5]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "start",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "count",
+          "type": "uint256"
+        }
+      ],
+      "name": "getWardrobePagePacked",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "packed",
+          "type": "bytes"
+        },
+        {
+          "internalType": "uint256",
+          "name": "equippedIndexPlus1",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "total",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "isBound",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isValidRaccoon",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mawSacrifice",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "typeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "mintTo",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "monthlySetCosmetics",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "raccoons",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeBatchTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_raccoons",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_mawSacrifice",
+          "type": "address"
+        }
+      ],
+      "name": "setContracts",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "setId",
+          "type": "uint256"
+        }
+      ],
+      "name": "setCurrentMonthlySet",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "typeId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "active",
+          "type": "bool"
+        }
+      ],
+      "name": "setTypeActive",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_baseTypeURI",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_boundBaseURI",
+          "type": "string"
+        }
+      ],
+      "name": "setURIs",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "typeExists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "slot",
+          "type": "uint8"
+        }
+      ],
+      "name": "unequipSlot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "uri",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum CosmeticsV2.Slot",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "name": "wardrobe",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "equippedIndex",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "Cultists": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721IncorrectOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721InsufficientApproval",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "approver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidApprover",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOperator",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721NonexistentToken",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotAuthorized",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Soulbound",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "burnFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApproved",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mawSacrifice",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "raccoonId",
+          "type": "uint256"
+        }
+      ],
+      "name": "mintTo",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ritual",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "mawSacrifice_",
+          "type": "address"
+        }
+      ],
+      "name": "setMawSacrifice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "ritual_",
+          "type": "address"
+        }
+      ],
+      "name": "setRitual",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "Demons": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "baseURI_",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "mythicBaseURI_",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721IncorrectOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721InsufficientApproval",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "approver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidApprover",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOperator",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721NonexistentToken",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "BaseImageURISet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "BaseURISet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum Demons.Rarity",
+          "name": "rarity",
+          "type": "uint8"
+        }
+      ],
+      "name": "DemonMinted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "head",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "face",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "form",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "aura",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "background",
+              "type": "uint8"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct Demons.DemonTraits",
+          "name": "traits",
+          "type": "tuple"
+        }
+      ],
+      "name": "DemonTraitsSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "MythicBaseURISet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "ritual",
+          "type": "address"
+        }
+      ],
+      "name": "RitualSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "baseImageURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApproved",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getDemonTraits",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "head",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "face",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "form",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "aura",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "background",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct Demons.DemonTraits",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "traitType",
+          "type": "uint8"
+        }
+      ],
+      "name": "getTraitCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "traitType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "traitIndex",
+          "type": "uint8"
+        }
+      ],
+      "name": "getTraitName",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "rarity",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "mintDemon",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        }
+      ],
+      "name": "mintTo",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "mythicMinted",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "head",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "face",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "form",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "aura",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "background",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct Demons.DemonTraits",
+          "name": "traits",
+          "type": "tuple"
+        }
+      ],
+      "name": "ownerSetTraits",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "rarityOf",
+      "outputs": [
+        {
+          "internalType": "enum Demons.Rarity",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ritual",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "setBaseImageURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "setBaseURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "setMythicBaseURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "ritual_",
+          "type": "address"
+        }
+      ],
+      "name": "setRitual",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "traitType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string[]",
+          "name": "names",
+          "type": "string[]"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "rarities",
+          "type": "uint16[]"
+        }
+      ],
+      "name": "setTraitData",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalMinted",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "traitNames",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "traitRarities",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "KeyShop": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_relics",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "EnforcedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExpectedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientETH",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidPrice",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MaxKeysExceeded",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "RefundFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WithdrawalFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroAddress",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "ETHWithdrawn",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "KeyPriceUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "buyer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "totalCost",
+          "type": "uint256"
+        }
+      ],
+      "name": "KeysPurchased",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newMax",
+          "type": "uint256"
+        }
+      ],
+      "name": "MaxKeysPerTxUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newRelics",
+          "type": "address"
+        }
+      ],
+      "name": "RelicsUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_KEYS_PER_TX_LIMIT",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "RUSTED_KEY_ID",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyKeys",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "keyPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maxKeysPerTx",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "mintFreeKeys",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "relics",
+      "outputs": [
+        {
+          "internalType": "contract IRelics",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_newPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "setKeyPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_max",
+          "type": "uint16"
+        }
+      ],
+      "name": "setMaxKeysPerTx",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_relics",
+          "type": "address"
+        }
+      ],
+      "name": "setRelics",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawETH",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "MawSacrificeV3Upgradeable": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "target",
+          "type": "address"
+        }
+      ],
+      "name": "AddressEmptyCode",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "implementation",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1967InvalidImplementation",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ERC1967NonPayable",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EnforcedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExpectedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FailedCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidInitialization",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NoCosmetics",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NoCosmeticsOfRarity",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotCultistOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotInitializing",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TooFast",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UUPSUnauthorizedCallContext",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "slot",
+          "type": "bytes32"
+        }
+      ],
+      "name": "UUPSUnsupportedProxiableUUID",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "AshesReceived",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "shardsUsed",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "capsMinted",
+          "type": "uint256"
+        }
+      ],
+      "name": "CapsCrafted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "relics",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "cosmetics",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "demons",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "cultists",
+          "type": "address"
+        }
+      ],
+      "name": "ContractsUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "cosmeticTypeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CosmeticRitualAttempted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CultistsSacrificed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        }
+      ],
+      "name": "DemonRitualAttempted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "KeysSacrificed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blocks",
+          "type": "uint256"
+        }
+      ],
+      "name": "MinBlocksSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "setId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "cosmeticTypeIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "MonthlyCosmeticsSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "source",
+          "type": "string"
+        }
+      ],
+      "name": "MythicMinted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "relicId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RelicReceived",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "source",
+          "type": "string"
+        }
+      ],
+      "name": "ShardAwarded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "implementation",
+          "type": "address"
+        }
+      ],
+      "name": "Upgraded",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "ASHES",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ASH_VIAL",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "BINDING_CONTRACT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "BONE_DAGGER",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "BURN_ADDRESS",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "LANTERN_FRAGMENT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_MYTHIC_DEMONS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "RUSTED_KEY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SOUL_DEED",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "UPGRADE_INTERFACE_VERSION",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WORM_EATEN_MASK",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "shardAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "convertShardsToRustedCaps",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cosmetics",
+      "outputs": [
+        {
+          "internalType": "contract ICosmeticsV2",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cultists",
+      "outputs": [
+        {
+          "internalType": "contract ICultists",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "currentCosmeticTypes",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentMonthlySetId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "demons",
+      "outputs": [
+        {
+          "internalType": "contract IDemons",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getConfig",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "rustedKeyId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "glassShardId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lanternFragmentId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "wormEatenMaskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "boneDaggerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ashVialId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "bindingContractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "soulDeedId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxMythicDemons",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minBlocksBetween",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "mythicDemonsMinted",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentCosmeticTypesCount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentCosmeticTypes",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getUserMythicCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_relics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cosmetics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_demons",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cultists",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_minBlocksBetween",
+          "type": "uint256"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "lastSacrificeBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minBlocksBetweenSacrifices",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mythicDemonsMinted",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "proxiableUUID",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "relics",
+      "outputs": [
+        {
+          "internalType": "contract IRelics",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sacrificeCosmetics",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "sacrificeCultist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        }
+      ],
+      "name": "sacrificeDemons",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sacrificeKeys",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sacrifice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "blocks",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMinBlocksBetweenSacrifices",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "cosmeticTypeIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "setMonthlyCosmeticTypes",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_relics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cosmetics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_demons",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cultists",
+          "type": "address"
+        }
+      ],
+      "name": "updateContracts",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "upgradeToAndCall",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "userMythicCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "version",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "RaccoonRenderer": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_cosmetics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_raccoons",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "rarity",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
+        }
+      ],
+      "name": "BaseImageUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
+        }
+      ],
+      "name": "CustomImageSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "url",
+          "type": "string"
+        }
+      ],
+      "name": "RenderingServiceUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "name": "baseImageURIs",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cosmetics",
+      "outputs": [
+        {
+          "internalType": "contract CosmeticsV2",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "customBaseImages",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "headId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "faceId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "bodyId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "furId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "backgroundId",
+          "type": "uint256"
+        }
+      ],
+      "name": "previewRaccoonWithCosmetic",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "imageURL",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "raccoons",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renderingServiceURL",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "rarity",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
+        }
+      ],
+      "name": "setBaseImage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
+        }
+      ],
+      "name": "setCustomImage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "url",
+          "type": "string"
+        }
+      ],
+      "name": "setRenderingService",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "Raccoons": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name_",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "symbol_",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxSupply_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "preRevealURI_",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "numerator",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "denominator",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC2981InvalidDefaultRoyalty",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC2981InvalidDefaultRoyaltyReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "numerator",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "denominator",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC2981InvalidTokenRoyalty",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC2981InvalidTokenRoyaltyReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ERC721EnumerableForbiddenBatchMint",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721IncorrectOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721InsufficientApproval",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "approver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidApprover",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOperator",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721NonexistentToken",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721OutOfBoundsIndex",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "cosmetics",
+          "type": "address"
+        }
+      ],
+      "name": "CosmeticsSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "fromId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "qty",
+          "type": "uint256"
+        }
+      ],
+      "name": "Minted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "RaccoonMinted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum Raccoons.State",
+          "name": "newState",
+          "type": "uint8"
+        }
+      ],
+      "name": "StateChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_SUPPLY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "allowlistMintOpen",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "allowlistMinted",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "allowlistRoot",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "baseTokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cosmetics",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "deleteDefaultRoyalty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dynamicMetadataURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "exists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApproved",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getState",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "hasCosmetics",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "joinCult",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maxPerTx",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "quantity",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "qty",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint16",
+          "name": "allowance",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "proof",
+          "type": "bytes32[]"
+        }
+      ],
+      "name": "mintAllowlistMerkle",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mintPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mintingEnabled",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "quantity",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerMint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "preRevealURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "revealed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "salePrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "royaltyInfo",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "open",
+          "type": "bool"
+        }
+      ],
+      "name": "setAllowlistMintOpen",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_allowlistRoot",
+          "type": "bytes32"
+        }
+      ],
+      "name": "setAllowlistRoot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "setBaseTokenURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_cosmetics",
+          "type": "address"
+        }
+      ],
+      "name": "setCosmeticsContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint96",
+          "name": "feeNumerator",
+          "type": "uint96"
+        }
+      ],
+      "name": "setDefaultRoyalty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "setDynamicMetadataURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "max",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMaxPerTx",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMintPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "setMintingEnabled",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "setPreRevealURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "_revealed",
+          "type": "bool"
+        }
+      ],
+      "name": "setRevealed",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "newState",
+          "type": "uint8"
+        }
+      ],
+      "name": "setState",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenByIndex",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenOfOwnerByIndex",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalMinted",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "Relics": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "baseUri",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "needed",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC1155InsufficientBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "approver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidApprover",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "idsLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "valuesLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC1155InvalidArrayLength",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidOperator",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155InvalidSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1155MissingApprovalForAll",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EnforcedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExpectedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MaxSupplyExceeded",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SupplyNotSet",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "keyShop",
+          "type": "address"
+        }
+      ],
+      "name": "KeyShopSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "mawSacrifice",
+          "type": "address"
+        }
+      ],
+      "name": "MawSacrificeSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "maxSupply",
+          "type": "uint256"
+        }
+      ],
+      "name": "MaxSupplySet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Minted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "ritual",
+          "type": "address"
+        }
+      ],
+      "name": "RitualSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "TransferBatch",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "TransferSingle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "URI",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "newUri",
+          "type": "string"
+        }
+      ],
+      "name": "URISet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "accounts",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "balanceOfBatch",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "burnBatch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "burnBatchFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "burnSelf",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "burnSelfBatch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "getSupplyInfo",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "current",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maximum",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "keyShop",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mawSacrifice",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "maxSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "mintBatch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ritual",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeBatchTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "keyShop_",
+          "type": "address"
+        }
+      ],
+      "name": "setKeyShop",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "mawSacrifice_",
+          "type": "address"
+        }
+      ],
+      "name": "setMawSacrifice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_maxSupply",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMaxSupply",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_maxSupplies",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "setMaxSupplyBatch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "ritual_",
+          "type": "address"
+        }
+      ],
+      "name": "setRitual",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "baseUri",
+          "type": "string"
+        }
+      ],
+      "name": "setURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "uri",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "RitualReadAggregator": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_cosmetics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_raccoons",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_relics",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "raccoonIds",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "relicIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "batchEverythingPacked",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "packed",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cosmetics",
+      "outputs": [
+        {
+          "internalType": "contract ICosmeticsV2",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "raccoonIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getEquippedPackedMany",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "packs",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "raccoonIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getOwners",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "owners",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getRelicBalances",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "balances",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "raccoons",
+      "outputs": [
+        {
+          "internalType": "contract IRaccoons",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "relics",
+      "outputs": [
+        {
+          "internalType": "contract IRelics",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "MawSacrifice": [
+    {
+      "inputs": [],
+      "name": "AccessControlBadConfirmation",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "neededRole",
+          "type": "bytes32"
+        }
+      ],
+      "name": "AccessControlUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "target",
+          "type": "address"
+        }
+      ],
+      "name": "AddressEmptyCode",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ConversionsPaused",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "implementation",
+          "type": "address"
+        }
+      ],
+      "name": "ERC1967InvalidImplementation",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ERC1967NonPayable",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EnforcedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExpectedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FailedCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidInitialization",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidUpgradeId",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NoCosmetics",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NoCosmeticsOfRarity",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotCultistOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotInitializing",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SacrificesPaused",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TooFast",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UUPSUnauthorizedCallContext",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "slot",
+          "type": "bytes32"
+        }
+      ],
+      "name": "UUPSUnsupportedProxiableUUID",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UpgradeAlreadyExecuted",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UpgradeDelayNotMet",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UpgradeNotAnnounced",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "AshesReceived",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "shardsUsed",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "capsMinted",
+          "type": "uint256"
+        }
+      ],
+      "name": "CapsCrafted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "relics",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "cosmetics",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "demons",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "cultists",
+          "type": "address"
+        }
+      ],
+      "name": "ContractsUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "paused",
+          "type": "bool"
+        }
+      ],
+      "name": "ConversionsPauseChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "cosmeticTypeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CosmeticRitualAttempted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CultistsSacrificed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        }
+      ],
+      "name": "DemonRitualAttempted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "KeysSacrificed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blocks",
+          "type": "uint256"
+        }
+      ],
+      "name": "MinBlocksSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "setId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "cosmeticTypeIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "MonthlyCosmeticsSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "source",
+          "type": "string"
+        }
+      ],
+      "name": "MythicMinted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "relicId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RelicReceived",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "previousAdminRole",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "newAdminRole",
+          "type": "bytes32"
+        }
+      ],
+      "name": "RoleAdminChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleGranted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleRevoked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "paused",
+          "type": "bool"
+        }
+      ],
+      "name": "SacrificesPauseChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "source",
+          "type": "string"
+        }
+      ],
+      "name": "ShardAwarded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "executeTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "UpgradeAnnounced",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "UpgradeCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        }
+      ],
+      "name": "UpgradeExecuted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "implementation",
+          "type": "address"
+        }
+      ],
+      "name": "Upgraded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "oldVersion",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "newVersion",
+          "type": "string"
+        }
+      ],
+      "name": "VersionUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "ASHES",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ASH_VIAL",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "BINDING_CONTRACT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "BONE_DAGGER",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "BURN_ADDRESS",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DEFAULT_ADMIN_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "LANTERN_FRAGMENT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_MYTHIC_DEMONS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "PAUSER_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "RUSTED_KEY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SOUL_DEED",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "UPGRADER_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "UPGRADE_DELAY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "UPGRADE_INTERFACE_VERSION",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WORM_EATEN_MASK",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        }
+      ],
+      "name": "announceUpgrade",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "announcements",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "announceTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "executed",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "upgradeId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelUpgrade",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "conversionsPaused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "shardAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "convertShardsToRustedCaps",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cosmetics",
+      "outputs": [
+        {
+          "internalType": "contract ICosmeticsV2",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cultists",
+      "outputs": [
+        {
+          "internalType": "contract ICultists",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "currentCosmeticTypes",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentMonthlySetId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "demons",
+      "outputs": [
+        {
+          "internalType": "contract IDemons",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "upgradeId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "executeUpgrade",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getConfig",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "rustedKeyId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "glassShardId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lanternFragmentId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "wormEatenMaskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "boneDaggerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ashVialId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "bindingContractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "soulDeedId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxMythicDemons",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minBlocksBetween",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "mythicDemonsMinted",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentCosmeticTypesCount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentCosmeticTypes",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPauseStatus",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "globalPaused",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "sacrificesPaused",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "conversionsPaused",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRoleAdmin",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getUserMythicCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "grantRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasRole",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "incrementNonce",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_relics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cosmetics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_demons",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cultists",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_minBlocksBetween",
+          "type": "uint256"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "lastSacrificeBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "minBlocksBetweenSacrifices",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mythicDemonsMinted",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pauseConversions",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pauseSacrifices",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "proxiableUUID",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "relics",
+      "outputs": [
+        {
+          "internalType": "contract IRelics",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "callerConfirmation",
+          "type": "address"
+        }
+      ],
+      "name": "renounceRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "revokeRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "roles",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "roleNames",
+          "type": "string[]"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "roleHashes",
+          "type": "bytes32[]"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "sacrificeCultist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "tier",
+          "type": "uint8"
+        }
+      ],
+      "name": "sacrificeDemons",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "fragments",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "masks",
+          "type": "uint256"
+        }
+      ],
+      "name": "sacrificeForCosmetic",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sacrificeKeys",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "sacrificeNonce",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "sacrificesPaused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "blocks",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMinBlocksBetweenSacrifices",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "cosmeticTypeIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "setMonthlyCosmeticTypes",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "newVersion",
+          "type": "string"
+        }
+      ],
+      "name": "setVersion",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "nonce",
+          "type": "uint256"
+        }
+      ],
+      "name": "testRNG",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpaauseConversions",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpauseSacrifices",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_relics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cosmetics",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_demons",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_cultists",
+          "type": "address"
+        }
+      ],
+      "name": "updateContracts",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "upgradeToAndCall",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "userMythicCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "version",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}

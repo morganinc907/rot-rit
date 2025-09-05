@@ -1,0 +1,16 @@
+{
+  "relics": "0x1933D91B6bf8D6bc4Eac03486DAcF4fFf1313f0b",
+  "raccoons": "0x6DB1C2d60579679A82C3Ac39cf7097B442E1Aa9f",
+  "cultists": "0x2D7cD25A014429282062298d2F712FA7983154B9",
+  "demons": "0xf830dcC09ba6BB0Eb575aD06E369f3483A65c5bF",
+  "cosmetics": "0x32640D260CeCD52581280e23B9DCc6F49D04Bdcb",
+  "keyShop": "0x9Bd1651f1f8aB416A72f094fB60BbC1737B67DB6",
+  "mawSacrifice": "0xB2e77ce03BC688C993Ee31F03000c56c211AD7db",
+  "raccoonRenderer": "0x3eE467d8Dc8Fdf26dFC17dA8630EE1078aEd3A85",
+  "ritualReadAggregator": "0xe14830B91Bf666E51305a89C1196d0e88bad98a2",
+  "chainId": 84532,
+  "blockNumber": 30483045,
+  "keyPrice": "0.002",
+  "raccoonPrice": "0.0",
+  "description": "Updated to use V4 UUPS proxy with RNG fix and correct cosmetics - Production ready"
+}

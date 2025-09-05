@@ -1,0 +1,41 @@
+{
+  "name": "@rot-ritual/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@chainlink/contracts": "^1.4.0",
+    "@openzeppelin/contracts": "^5.4.0",
+    "@openzeppelin/contracts-upgradeable": "^5.4.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.1",
+    "dotenv": "^16.3.0",
+    "hardhat": "^2.19.0"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "build:contracts": "forge clean && forge build",
+    "build:abis": "node ../../scripts/build-abis.mjs",
+    "check:abis": "node ../../scripts/check-abis.mjs",
+    "build:packages": "npm run build:contracts && npm run build:abis && npm run check:abis",
+    "test": "hardhat test",
+    "test:gas": "forge test --match-test testGas_",
+    "test:fuzz": "forge test --match-test testFuzz_",
+    "test:invariants": "forge test test/FuzzInvariants.t.sol",
+    "deploy:baseSepolia": "hardhat run scripts/deploy-complete-v2.js --network baseSepolia",
+    "deploy:proxy": "hardhat run scripts/deploy-uups-proxy.js --network baseSepolia",
+    "gen:proxyjson": "CONTRACT=MawSacrificeV3Upgradeable PROXY=0xC6542a6c227Bc4C674E17dbEfc2AEc851f962456 hardhat run scripts/genProxyDeployment.js --network baseSepolia",
+    "check:noaddrs": "node scripts/check-no-raw-addresses.js",
+    "gas:snapshots": "node scripts/gas-snapshots.js",
+    "verify:selectors": "hardhat run scripts/verify-selectors.js --network baseSepolia",
+    "smoke:test": "hardhat run scripts/smoke-test.js --network baseSepolia",
+    "dev:faucet": "hardhat run scripts/dev-faucet.js --network baseSepolia",
+    "addresses": "node -e 'console.log(JSON.stringify(require(\"./packages/addresses/addresses.json\"), null, 2))'",
+    "health": "npm run smoke:test && npm run gas:snapshots && npm run verify:selectors",
+    "postdeploy": "npm run build:packages && npm run check:abis && npm run smoke:test",
+    "release:baseSepolia": "npm run deploy:proxy && npm run gen:proxyjson && npm run postdeploy && echo '🎉 Release complete!'",
+    "upgrade:v4": "echo '⚠️ V4 upgrade requires 24h timelock - use announceUpgrade → wait → executeUpgrade'"
+  }
+}

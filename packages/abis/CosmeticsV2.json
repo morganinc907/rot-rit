@@ -1,0 +1,1464 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_baseTypeURI",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_boundBaseURI",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "needed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ERC1155InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "approver",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1155InvalidApprover",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "idsLength",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "valuesLength",
+        "type": "uint256"
+      }
+    ],
+    "name": "ERC1155InvalidArrayLength",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1155InvalidOperator",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1155InvalidReceiver",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1155InvalidSender",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1155MissingApprovalForAll",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
+      }
+    ],
+    "name": "ApprovalForAll",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "baseTypeId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "CosmeticBound",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "CosmeticEquipped",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "typeId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "CosmeticMinted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "typeId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "rarity",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      }
+    ],
+    "name": "CosmeticTypeCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "CosmeticUnequipped",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "ids",
+        "type": "uint256[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "values",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "TransferBatch",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "TransferSingle",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "value",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "URI",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "accounts",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "ids",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "balanceOfBatch",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "baseTypeURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "typeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "bindToRaccoon",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "boundBaseType",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "boundBaseURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "boundToRaccoon",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "cosmeticTypes",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "previewLayerURI",
+        "type": "string"
+      },
+      {
+        "internalType": "uint8",
+        "name": "rarity",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "monthlySetId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxSupply",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currentSupply",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "active",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "previewLayerURI",
+        "type": "string"
+      },
+      {
+        "internalType": "uint8",
+        "name": "rarity",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "monthlySetId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxSupply",
+        "type": "uint256"
+      }
+    ],
+    "name": "createCosmeticType",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "typeId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currentMonthlySetId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "itemIndex",
+        "type": "uint256"
+      }
+    ],
+    "name": "equipCosmetic",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "boundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "equipCosmeticById",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "typeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCosmeticInfo",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "previewLayerURI",
+        "type": "string"
+      },
+      {
+        "internalType": "uint8",
+        "name": "rarity",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "monthlySetId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "active",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEquippedBoundIds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "head",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "face",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "body",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fur",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "background",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEquippedCosmetics",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "headTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "faceTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bodyTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "furTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "backgroundTypeId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      }
+    ],
+    "name": "getEquippedForSlot",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "boundId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "baseTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "equippedIndexPlus1",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEquippedPacked",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "packed",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "raccoonIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getEquippedPackedMany",
+    "outputs": [
+      {
+        "internalType": "bytes[]",
+        "name": "packs",
+        "type": "bytes[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEquippedSummary",
+    "outputs": [
+      {
+        "internalType": "uint256[5]",
+        "name": "boundIds",
+        "type": "uint256[5]"
+      },
+      {
+        "internalType": "uint256[5]",
+        "name": "baseTypeIds",
+        "type": "uint256[5]"
+      },
+      {
+        "internalType": "uint256[5]",
+        "name": "equippedIndexPlus1",
+        "type": "uint256[5]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEquippedSummaryStruct",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256[5]",
+            "name": "boundIds",
+            "type": "uint256[5]"
+          },
+          {
+            "internalType": "uint256[5]",
+            "name": "baseTypeIds",
+            "type": "uint256[5]"
+          },
+          {
+            "internalType": "uint256[5]",
+            "name": "equippedIndexPlus1",
+            "type": "uint256[5]"
+          }
+        ],
+        "internalType": "struct CosmeticsV2.EquippedSummary",
+        "name": "s",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getWardrobeCounts",
+    "outputs": [
+      {
+        "internalType": "uint256[5]",
+        "name": "counts",
+        "type": "uint256[5]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "name": "getWardrobePagePacked",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "packed",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "equippedIndexPlus1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "total",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      }
+    ],
+    "name": "isApprovedForAll",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "isBound",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      }
+    ],
+    "name": "isValidRaccoon",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mawSacrifice",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "typeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "mintTo",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "monthlySetCosmetics",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "raccoons",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "ids",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "values",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "safeBatchTransferFrom",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "safeTransferFrom",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
+      }
+    ],
+    "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_raccoons",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_mawSacrifice",
+        "type": "address"
+      }
+    ],
+    "name": "setContracts",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "setId",
+        "type": "uint256"
+      }
+    ],
+    "name": "setCurrentMonthlySet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "typeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "active",
+        "type": "bool"
+      }
+    ],
+    "name": "setTypeActive",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_baseTypeURI",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_boundBaseURI",
+        "type": "string"
+      }
+    ],
+    "name": "setURIs",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "typeExists",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raccoonId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "slot",
+        "type": "uint8"
+      }
+    ],
+    "name": "unequipSlot",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "uri",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum CosmeticsV2.Slot",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "wardrobe",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "equippedIndex",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

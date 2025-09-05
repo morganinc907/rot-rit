@@ -1,0 +1,16 @@
+{
+  "relics": "0x1933D91B6bf8D6bc4Eac03486DAcF4fFf1313f0b",
+  "raccoons": "0x6DB1C2d60579679A82C3Ac39cf7097B442E1Aa9f",
+  "cultists": "0x2D7cD25A014429282062298d2F712FA7983154B9",
+  "demons": "0xf830dcC09ba6BB0Eb575aD06E369f3483A65c5bF",
+  "cosmetics": "0x8184FdB709f6B810d94d4Ed2b6196866EF604e68",
+  "keyShop": "0x9Bd1651f1f8aB416A72f094fB60BbC1737B67DB6",
+  "mawSacrifice": "0xf65B16c49E505F5BC5c941081c2FA213f8D15D2f",
+  "raccoonRenderer": "0x3eE467d8Dc8Fdf26dFC17dA8630EE1078aEd3A85",
+  "ritualReadAggregator": "0xe14830B91Bf666E51305a89C1196d0e88bad98a2",
+  "chainId": 84532,
+  "blockNumber": 30283739,
+  "keyPrice": "0.002",
+  "raccoonPrice": "0.0",
+  "description": "Updated with newly deployed contracts - Complete 9-contract ecosystem"
+}

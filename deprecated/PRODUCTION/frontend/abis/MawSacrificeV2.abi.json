@@ -1,0 +1,34 @@
+[
+  {
+    "type": "function",
+    "name": "sacrificeKeys",
+    "stateMutability": "nonpayable", 
+    "inputs": [
+      { "name": "amount", "type": "uint256" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "sacrificeForCosmetic",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "fragments", "type": "uint256" },
+      { "name": "masks", "type": "uint256" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "sacrificeForDemon", 
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "daggers", "type": "uint256" },
+      { "name": "vials", "type": "uint256" },
+      { "name": "useBindingContract", "type": "bool" },
+      { "name": "useSoulDeed", "type": "bool" },
+      { "name": "cultistTokenId", "type": "uint256" }
+    ],
+    "outputs": []
+  }
+]

@@ -1,0 +1,63 @@
+name: Publish ABIs to npm
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        run: npm ci
+
+      - name: Compile
+        run: npx hardhat compile
+
+      - name: Prepare package folder
+        id: prep
+        run: |
+          mkdir -p pkg/abis
+          # Extract ABIs
+          find artifacts -name "*.json" -path "*/contracts/*" -print0 | xargs -0 -I {} bash -lc 'name=$(basename {} .json); jq .abi {} > pkg/abis/${name}.abi.json || true'
+          # Include deploy addresses if present
+          if [ -f deploy.output.json ]; then cp deploy.output.json pkg/deploy.output.json; fi
+          # Build package.json dynamically from tag
+          TAG="${GITHUB_REF##*/}"
+          VERSION="${TAG#v}"
+          SCOPE="${{ vars.NPM_SCOPE }}"
+          if [ -z "$SCOPE" ]; then SCOPE="rotritual"; fi
+          NAME="@${SCOPE}/abis"
+          cat > pkg/package.json <<JSON
+          {
+            "name": "${NAME}",
+            "version": "${VERSION}",
+            "description": "ABIs and deploy addresses for Rot Ritual contracts",
+            "license": "MIT",
+            "type": "module",
+            "exports": {
+              "./package.json": "./package.json",
+              "./deploy.output.json": "./deploy.output.json"
+            },
+            "files": ["abis", "deploy.output.json"],
+            "publishConfig": { "access": "public" }
+          }
+          JSON
+          cp README.md pkg/README.md || true
+
+      - name: Publish to npm
+        run: npm publish
+        working-directory: pkg
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

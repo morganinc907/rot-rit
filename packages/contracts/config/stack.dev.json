@@ -1,0 +1,12 @@
+{
+  "comment": "Dev timelock removal configuration for Rot Ritual",
+  "timelock": "0xC6542a6c227Bc4C674E17dbEfc2AEc851f962456",
+  "proxies": [
+    {
+      "name": "MawSacrifice",
+      "address": "0xC6542a6c227Bc4C674E17dbEfc2AEc851f962456",
+      "pattern": "UUPS"
+    }
+  ],
+  "newOwner": "0x52257934A41c55F4758b92F4D23b69f920c3652A"
+}

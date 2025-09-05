@@ -1,0 +1,115 @@
+{
+  "collection": {
+    "name": "Summoned Demons",
+    "description": "Powerful demons summoned through dark rituals",
+    "baseUri": "ipfs://REPLACE_WITH_IPFS_HASH/",
+    "rareTotalSupply": 900,
+    "mythicTotalSupply": 100
+  },
+  "rareLayers": [
+    {
+      "name": "backgrounds",
+      "displayName": "Background",
+      "traits": [
+        { "name": "Inferno", "weight": 25, "filename": "inferno.png" },
+        { "name": "Abyss", "weight": 20, "filename": "abyss.png" },
+        { "name": "Storm", "weight": 15, "filename": "storm.png" },
+        { "name": "Nightmare", "weight": 15, "filename": "nightmare.png" },
+        { "name": "Void Portal", "weight": 10, "filename": "void_portal.png" },
+        { "name": "Blood Rain", "weight": 8, "filename": "blood_rain.png" },
+        { "name": "Soul Prison", "weight": 5, "filename": "soul_prison.png" },
+        { "name": "Dimensional Rift", "weight": 2, "filename": "dimensional_rift.png" }
+      ]
+    },
+    {
+      "name": "forms",
+      "displayName": "Form",
+      "traits": [
+        { "name": "Humanoid", "weight": 30, "filename": "humanoid.png" },
+        { "name": "Beast", "weight": 25, "filename": "beast.png" },
+        { "name": "Winged", "weight": 20, "filename": "winged.png" },
+        { "name": "Multi-Armed", "weight": 10, "filename": "multi_armed.png" },
+        { "name": "Serpentine", "weight": 8, "filename": "serpentine.png" },
+        { "name": "Shadow", "weight": 5, "filename": "shadow.png" },
+        { "name": "Ethereal", "weight": 2, "filename": "ethereal.png" }
+      ]
+    },
+    {
+      "name": "heads",
+      "displayName": "Head",
+      "traits": [
+        { "name": "Horned Skull", "weight": 25, "filename": "horned_skull.png" },
+        { "name": "Multiple Eyes", "weight": 20, "filename": "multiple_eyes.png" },
+        { "name": "Goat Head", "weight": 15, "filename": "goat_head.png" },
+        { "name": "Tentacle Face", "weight": 15, "filename": "tentacle_face.png" },
+        { "name": "Flaming Skull", "weight": 10, "filename": "flaming_skull.png" },
+        { "name": "Three Heads", "weight": 8, "filename": "three_heads.png" },
+        { "name": "Crown of Eyes", "weight": 5, "filename": "crown_eyes.png" },
+        { "name": "Void Face", "weight": 2, "filename": "void_face.png" }
+      ]
+    },
+    {
+      "name": "faces",
+      "displayName": "Face",
+      "traits": [
+        { "name": "Burning Eyes", "weight": 25, "filename": "burning_eyes.png" },
+        { "name": "Fanged Maw", "weight": 20, "filename": "fanged_maw.png" },
+        { "name": "No Face", "weight": 15, "filename": "no_face.png" },
+        { "name": "Melting", "weight": 15, "filename": "melting.png" },
+        { "name": "Screaming", "weight": 10, "filename": "screaming.png" },
+        { "name": "Ancient Runes", "weight": 8, "filename": "ancient_runes.png" },
+        { "name": "Galaxy Eyes", "weight": 5, "filename": "galaxy_eyes.png" },
+        { "name": "Pure Darkness", "weight": 2, "filename": "pure_darkness.png" }
+      ]
+    },
+    {
+      "name": "auras",
+      "displayName": "Aura",
+      "traits": [
+        { "name": "Fire", "weight": 25, "filename": "fire_aura.png" },
+        { "name": "Shadow", "weight": 20, "filename": "shadow_aura.png" },
+        { "name": "Lightning", "weight": 15, "filename": "lightning_aura.png" },
+        { "name": "Blood", "weight": 15, "filename": "blood_aura.png" },
+        { "name": "Poison", "weight": 10, "filename": "poison_aura.png" },
+        { "name": "Souls", "weight": 8, "filename": "souls_aura.png" },
+        { "name": "Void", "weight": 5, "filename": "void_aura.png" },
+        { "name": "Chaos", "weight": 2, "filename": "chaos_aura.png" }
+      ]
+    }
+  ],
+  "mythicEditions": [
+    {
+      "id": 10001,
+      "name": "Baal, Lord of Destruction",
+      "description": "Ancient demon lord of unfathomable power",
+      "filename": "baal.png",
+      "attributes": [
+        { "trait_type": "Rarity", "value": "Mythic" },
+        { "trait_type": "Power Level", "value": "Omega" },
+        { "trait_type": "Domain", "value": "Destruction" }
+      ]
+    },
+    {
+      "id": 10002,
+      "name": "Lilith, Mother of Demons",
+      "description": "The first demon, mother to all darkness",
+      "filename": "lilith.png",
+      "attributes": [
+        { "trait_type": "Rarity", "value": "Mythic" },
+        { "trait_type": "Power Level", "value": "Omega" },
+        { "trait_type": "Domain", "value": "Corruption" }
+      ]
+    },
+    {
+      "id": 10003,
+      "name": "Mephisto, Lord of Hatred",
+      "description": "Master of hatred and torment",
+      "filename": "mephisto.png",
+      "attributes": [
+        { "trait_type": "Rarity", "value": "Mythic" },
+        { "trait_type": "Power Level", "value": "Omega" },
+        { "trait_type": "Domain", "value": "Hatred" }
+      ]
+    }
+  ]
+}

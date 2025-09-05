@@ -1,0 +1,283 @@
+/* Maw Chomp Animation - Aggressive camera shake */
+@keyframes mawChomp {
+  /* First Chew - VIOLENT */
+  0% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+  1% { transform: translate(-25px, 18px) rotate(-2deg); filter: blur(1px); }
+  2% { transform: translate(28px, -22px) rotate(1.5deg); filter: blur(2px); }
+  3% { transform: translate(-20px, 15px) rotate(-1deg); filter: blur(1.5px); }
+  4% { transform: translate(22px, -18px) rotate(1deg); filter: blur(2px); }
+  5% { transform: translate(-18px, 12px) rotate(-0.5deg); filter: blur(1px); }
+  6% { transform: translate(15px, -10px) rotate(0.5deg); filter: blur(1.5px); }
+  7% { transform: translate(-12px, 8px) rotate(-0.3deg); filter: blur(1px); }
+  8% { transform: translate(10px, -6px) rotate(0.3deg); filter: blur(0.5px); }
+  9% { transform: translate(-6px, 4px) rotate(0deg); filter: blur(0px); }
+  10% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+  
+  /* Pause */
+  20% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+  
+  /* Second Chew - Strong */
+  21% { transform: translate(-20px, 14px) rotate(-1.5deg); filter: blur(1px); }
+  22% { transform: translate(22px, -16px) rotate(1deg); filter: blur(1.5px); }
+  23% { transform: translate(-16px, 12px) rotate(-0.8deg); filter: blur(1px); }
+  24% { transform: translate(18px, -10px) rotate(0.8deg); filter: blur(1.2px); }
+  25% { transform: translate(-12px, 8px) rotate(-0.4deg); filter: blur(0.8px); }
+  26% { transform: translate(10px, -6px) rotate(0.4deg); filter: blur(0.6px); }
+  27% { transform: translate(-6px, 4px) rotate(0deg); filter: blur(0.3px); }
+  28% { transform: translate(4px, -2px) rotate(0deg); filter: blur(0px); }
+  29% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+  
+  /* Pause */
+  40% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+  
+  /* Third Chew - Medium */
+  41% { transform: translate(-16px, 12px) rotate(-1deg); filter: blur(0.8px); }
+  42% { transform: translate(18px, -14px) rotate(0.8deg); filter: blur(1px); }
+  43% { transform: translate(-12px, 8px) rotate(-0.5deg); filter: blur(0.6px); }
+  44% { transform: translate(14px, -6px) rotate(0.5deg); filter: blur(0.8px); }
+  45% { transform: translate(-8px, 4px) rotate(-0.3deg); filter: blur(0.4px); }
+  46% { transform: translate(6px, -3px) rotate(0.2deg); filter: blur(0.3px); }
+  47% { transform: translate(-4px, 2px) rotate(0deg); filter: blur(0.2px); }
+  48% { transform: translate(2px, -1px) rotate(0deg); filter: blur(0px); }
+  49% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+  
+  /* Calm before the storm */
+  55% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+  
+  /* Building rumble - slow anticipation (much longer buildup) */
+  58% { transform: translate(-1px, 0px) rotate(0deg); filter: blur(0px); }
+  60% { transform: translate(1px, -1px) rotate(0deg); filter: blur(0px); }
+  62% { transform: translate(-1px, 1px) rotate(0deg); filter: blur(0px); }
+  64% { transform: translate(2px, -1px) rotate(0deg); filter: blur(0px); }
+  66% { transform: translate(-2px, 1px) rotate(0deg); filter: blur(0px); }
+  68% { transform: translate(2px, -2px) rotate(0deg); filter: blur(0.1px); }
+  70% { transform: translate(-3px, 2px) rotate(0deg); filter: blur(0.1px); }
+  72% { transform: translate(3px, -2px) rotate(0deg); filter: blur(0.2px); }
+  74% { transform: translate(-3px, 3px) rotate(-0.1deg); filter: blur(0.2px); }
+  76% { transform: translate(4px, -3px) rotate(0.1deg); filter: blur(0.3px); }
+  78% { transform: translate(-4px, 3px) rotate(-0.1deg); filter: blur(0.3px); }
+  80% { transform: translate(5px, -4px) rotate(0.2deg); filter: blur(0.4px); }
+  82% { transform: translate(-5px, 4px) rotate(-0.2deg); filter: blur(0.4px); }
+  84% { transform: translate(6px, -5px) rotate(0.3deg); filter: blur(0.5px); }
+  86% { transform: translate(-6px, 5px) rotate(-0.3deg); filter: blur(0.5px); }
+  88% { transform: translate(7px, -6px) rotate(0.4deg); filter: blur(0.6px); }
+  90% { transform: translate(-8px, 6px) rotate(-0.4deg); filter: blur(0.7px); }
+  92% { transform: translate(9px, -7px) rotate(0.5deg); filter: blur(0.8px); }
+  
+  /* The BIG puke - violent expulsion */
+  94% { transform: translate(-22px, 18px) rotate(-1.5deg); filter: blur(2px); }
+  95% { transform: translate(25px, -20px) rotate(1.5deg); filter: blur(2.2px); }
+  96% { transform: translate(-18px, 15px) rotate(-1deg); filter: blur(1.5px); }
+  97% { transform: translate(15px, -12px) rotate(0.8deg); filter: blur(1px); }
+  98% { transform: translate(-8px, 6px) rotate(-0.3deg); filter: blur(0.5px); }
+  99% { transform: translate(4px, -3px) rotate(0.1deg); filter: blur(0.2px); }
+  100% { transform: translate(0, 0) rotate(0deg); filter: blur(0px); }
+}
+
+.maw-chomp {
+  animation: mawChomp 3.5s ease-out forwards;
+  position: relative;
+  transform-origin: center center;
+}
+
+/* Flash overlay for impact */
+@keyframes chompFlash {
+  0%, 20%, 40%, 55%, 100% { opacity: 0; }
+  1%, 21%, 41% { opacity: 0.4; }
+  3%, 23%, 43% { opacity: 0.2; }
+  5%, 25%, 45% { opacity: 0; }
+  
+  /* Building tension - gradual glow increase */
+  65% { opacity: 0.05; }
+  70% { opacity: 0.08; }
+  75% { opacity: 0.12; }
+  80% { opacity: 0.16; }
+  85% { opacity: 0.2; }
+  90% { opacity: 0.3; }
+  92% { opacity: 0.4; }
+  
+  /* The big puke flash */
+  94% { opacity: 0.7; }
+  95% { opacity: 0.9; }
+  96% { opacity: 0.6; }
+  97% { opacity: 0.3; }
+  98% { opacity: 0.1; }
+}
+
+.chomp-flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, rgba(138, 43, 226, 0.8), rgba(75, 0, 130, 0.4));
+  pointer-events: none;
+  z-index: 9998;
+  animation: chompFlash 3.5s ease-out forwards;
+}
+
+/* Reward Reveal Animation */
+@keyframes rewardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes rewardFadeIn {
+  0% { 
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% { 
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.reward-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  animation: rewardFadeIn 0.6s ease-out forwards;
+}
+
+.reward-item {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: rewardFloat 3s ease-in-out infinite;
+}
+
+.reward-image {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  z-index: 2;
+  position: relative;
+}
+
+/* Rarity-based glow effects */
+.reward-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+.glow-common {
+  background: radial-gradient(circle, rgba(156, 163, 175, 0.8), transparent);
+}
+
+.glow-uncommon {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.8), transparent);
+}
+
+.glow-rare {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.8), transparent);
+}
+
+.glow-epic {
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.8), transparent);
+}
+
+.glow-legendary {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.8), transparent);
+}
+
+.glow-mythic {
+  background: radial-gradient(circle, rgba(255, 0, 255, 0.8), rgba(0, 255, 255, 0.4), transparent);
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% { transform: translateX(-200%) rotate(30deg); }
+  100% { transform: translateX(200%) rotate(30deg); }
+}
+
+.reward-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.reward-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shimmer 3s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+/* Reward info text */
+.reward-info {
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: white;
+  font-family: 'Gothic Pixel', monospace;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+}
+
+.reward-name {
+  font-size: 24px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.reward-rarity {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* Click to dismiss hint */
+.dismiss-hint {
+  position: absolute;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  font-family: 'Gothic Pixel', monospace;
+  animation: fadeInOut 2s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}

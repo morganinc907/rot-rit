@@ -1,0 +1,32 @@
+{
+  "network": "Base Sepolia",
+  "chainId": 84532,
+  "lastUpdated": "2025-08-28",
+  "status": "WORKING - All contracts tested and functional",
+  
+  "contracts": {
+    "relics": "0x1933D91B6bf8D6bc4Eac03486DAcF4fFf1313f0b",
+    "raccoons": "0x6DB1C2d60579679A82C3Ac39cf7097B442E1Aa9f",
+    "cultists": "0x2D7cD25A014429282062298d2F712FA7983154B9",
+    "demons": "0xf830dcC09ba6BB0Eb575aD06E369f3483A65c5bF",
+    "cosmetics": "0xB0E32D26f6b61cB71115576e6a8d7De072e6310A",
+    "keyShop": "0x9Bd1651f1f8aB416A72f094fB60BbC1737B67DB6",
+    "mawSacrifice": "0xDCE4b7C0D351A1fce48Dd4037D82559fE8c16dC2",
+    "rituals": "0xDCE4b7C0D351A1fce48Dd4037D82559fE8c16dC2",
+    "raccoonRenderer": "0x3eE467d8Dc8Fdf26dFC17dA8630EE1078aEd3A85",
+    "ritualReadAggregator": "0xe14830B91Bf666E51305a89C1196d0e88bad98a2"
+  },
+  
+  "prices": {
+    "keyPrice": "0.002",
+    "raccoonPrice": "0.0"
+  },
+  
+  "notes": {
+    "mawSacrifice": "MawSacrificeV2Fixed - COMPLETE WORKING CONTRACT with all sacrifice functions",
+    "cosmetics": "WORKING CONTRACT - Has all 5 cosmetic types (glasses, strainer, pink, orange, underpants)",
+    "rituals": "Same address as mawSacrifice - they are the same contract",
+    "contractFile": "MawSacrificeV2Fixed.sol - Located in PRODUCTION/contracts/",
+    "deployScript": "deploy-maw-fixed.js - Located in PRODUCTION/scripts/"
+  }
+}

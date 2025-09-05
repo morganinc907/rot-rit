@@ -1,0 +1,95 @@
+# ====================================
+# ROT RITUAL - GIT ATTRIBUTES
+# ====================================
+
+# Set default behavior
+* text=auto eol=lf
+
+# ===== TEXT FILES =====
+*.md text
+*.txt text
+*.json text
+*.yml text
+*.yaml text
+*.toml text
+*.ini text
+*.cfg text
+
+# ===== SOURCE CODE =====
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.sol text
+*.vy text
+*.cairo text
+*.rs text
+
+# ===== WEB ASSETS =====
+*.html text
+*.css text
+*.scss text
+*.sass text
+*.less text
+*.svg text
+
+# ===== CONFIG FILES =====
+*.gitignore text
+*.gitattributes text
+.editorconfig text
+*.env* text
+package.json text
+package-lock.json text linguist-generated=true
+yarn.lock text linguist-generated=true
+pnpm-lock.yaml text linguist-generated=true
+
+# ===== DOCUMENTATION =====
+README* text
+LICENSE* text
+CHANGELOG* text
+CONTRIBUTING* text
+*.md text
+
+# ===== BINARY FILES =====
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
+
+# Audio/Video
+*.mp3 binary
+*.mp4 binary
+*.mov binary
+*.avi binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.7z binary
+
+# Fonts
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.otf binary
+
+# ===== GENERATED FILES =====
+# Mark generated files to reduce diff noise
+*.min.js linguist-generated=true
+*.min.css linguist-generated=true
+dist/ linguist-generated=true
+build/ linguist-generated=true
+coverage/ linguist-generated=true
+
+# ===== CONTRACT ARTIFACTS =====
+out/ linguist-generated=true
+artifacts/ linguist-generated=true
+cache/ linguist-generated=true
+
+# ===== END OF GITATTRIBUTES =====

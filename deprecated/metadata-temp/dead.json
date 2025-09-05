@@ -1,0 +1,23 @@
+{
+  "name": "Dead Raccoon",
+  "description": "A fallen raccoon that has met its demise in the ritual chamber. Its spirit lingers in the shadows.",
+  "image": "ipfs://bafybeifsiog2puwlxfhszxjs3ttqi5r6y2zzdwhvswwanzehasc7tj3sf4/dead.png",
+  "attributes": [
+    {
+      "trait_type": "State",
+      "value": "Dead"
+    },
+    {
+      "trait_type": "Status",
+      "value": "Deceased"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Lifeless"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Fallen"
+    }
+  ]
+}

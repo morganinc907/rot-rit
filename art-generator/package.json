@@ -1,0 +1,24 @@
+{
+  "name": "rot-ritual-art-generator",
+  "version": "1.0.0",
+  "description": "NFT art and metadata generator for Rot & Ritual Raccoons and Demons",
+  "main": "index.js",
+  "scripts": {
+    "generate:raccoons": "node scripts/generate-raccoons.js",
+    "generate:demons": "node scripts/generate-demons.js",
+    "generate:all": "npm run generate:raccoons && npm run generate:demons",
+    "setup:traits": "node scripts/setup-contract-traits.js",
+    "clean": "rm -rf output/*/images/* output/*/metadata/*"
+  },
+  "dependencies": {
+    "canvas": "^2.11.2",
+    "sharp": "^0.33.2",
+    "weighted": "^1.0.0",
+    "fs-extra": "^11.2.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "MIT"
+}

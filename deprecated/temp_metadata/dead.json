@@ -1,0 +1,23 @@
+{
+  "name": "Dead Raccoon",
+  "description": "A raccoon that has fallen in battle and crossed over to the other side. Its spirit lingers in the shadows.",
+  "image": "ipfs://bafybeiaxmevcthi76k45i6buodpefmoavhdxdnsxrmliedytkzk4n2zt24/dead.png",
+  "attributes": [
+    {
+      "trait_type": "State",
+      "value": "Dead"
+    },
+    {
+      "trait_type": "Power Level",
+      "value": "Spirit"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Vacant"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Deceased"
+    }
+  ]
+}

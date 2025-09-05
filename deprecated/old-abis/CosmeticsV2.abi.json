@@ -1,0 +1,51 @@
+[
+  {
+    "type": "function",
+    "name": "getEquippedCosmetics",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "raccoonId", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "", "type": "uint256[5]" }
+    ]
+  },
+  {
+    "type": "function", 
+    "name": "getWardrobePage",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "raccoonId", "type": "uint256" },
+      { "name": "slot", "type": "uint256" },
+      { "name": "start", "type": "uint256" },
+      { "name": "count", "type": "uint256" }
+    ],
+    "outputs": [
+      { 
+        "name": "", 
+        "type": "tuple",
+        "components": [
+          { "name": "items", "type": "tuple[]", "components": [
+            { "name": "baseTypeId", "type": "uint256" },
+            { "name": "boundId", "type": "uint256" },
+            { "name": "boundAt", "type": "uint256" }
+          ]},
+          { "name": "equippedIndex", "type": "uint256" },
+          { "name": "total", "type": "uint256" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TransferSingle",
+    "anonymous": false,
+    "inputs": [
+      { "name": "operator", "type": "address", "indexed": true },
+      { "name": "from", "type": "address", "indexed": true },
+      { "name": "to", "type": "address", "indexed": true },
+      { "name": "id", "type": "uint256", "indexed": false },
+      { "name": "value", "type": "uint256", "indexed": false }
+    ]
+  }
+]

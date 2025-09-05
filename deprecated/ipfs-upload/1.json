@@ -1,0 +1,23 @@
+{
+  "name": "Raccoon #1",
+  "description": "A mischievous raccoon ready to join the ritual chamber. This little bandit holds secrets of the shadows.",
+  "image": "ipfs://bafybeifsiog2puwlxfhszxjs3ttqi5r6y2zzdwhvswwanzehasc7tj3sf4/1.png",
+  "attributes": [
+    {
+      "trait_type": "State",
+      "value": "Normal"
+    },
+    {
+      "trait_type": "ID",
+      "value": "1"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Normal"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    }
+  ]
+}

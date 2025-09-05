@@ -1,0 +1,12 @@
+{
+  "name": "@rot-ritual/addresses",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo 'No build needed for TypeScript package'"
+  }
+}

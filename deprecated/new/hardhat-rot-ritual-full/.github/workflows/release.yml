@@ -1,0 +1,57 @@
+name: Release ABIs & Addresses
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Compile
+        run: npx hardhat compile
+
+      - name: Archive ABIs
+        run: |
+          mkdir -p release/abis
+          # Extract ABI arrays for each compiled contract JSON
+          find artifacts -name "*.json" -path "*/contracts/*" -print0 | xargs -0 -I {} bash -lc 'name=$(basename {} .json); jq .abi {} > release/abis/${name}.abi.json || true'
+        shell: bash
+
+      - name: Copy deploy.output.json if present
+        run: |
+          if [ -f deploy.output.json ]; then
+            cp deploy.output.json release/deploy.output.json
+          fi
+
+      - name: Create zip
+        run: |
+          cd release
+          zip -r ../rot-ritual-release.zip . || true
+          cd -
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            rot-ritual-release.zip
+          body: |
+            Auto-generated release artifacts:
+            - ABIs for all compiled contracts
+            - deploy.output.json (if present)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

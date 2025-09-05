@@ -1,0 +1,52 @@
+name: Publish ABIs to gh-pages
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install
+        run: npm ci
+
+      - name: Compile
+        run: npx hardhat compile
+
+      - name: Build 'site' directory with ABIs + deploy.output.json
+        run: |
+          mkdir -p site/abis
+          find artifacts -name "*.json" -path "*/contracts/*" -print0 | xargs -0 -I {} bash -lc 'name=$(basename {} .json); jq .abi {} > site/abis/${name}.abi.json || true'
+          if [ -f deploy.output.json ]; then cp deploy.output.json site/deploy.output.json; fi
+          echo '{"ok":true,"ts":"'$(date -u +%FT%TZ)'"}' > site/index.json
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

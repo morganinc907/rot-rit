@@ -1,0 +1,1050 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "error",
+    "name": "AddressEmptyCode",
+    "inputs": [
+      {
+        "name": "target",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ConversionsPaused",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "EnforcedPause",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ERC1967InvalidImplementation",
+    "inputs": [
+      {
+        "name": "implementation",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC1967NonPayable",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ExpectedPause",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "FailedCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InsufficientBalance",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidAmount",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidInitialization",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotAuthorized",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotInitializing",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OwnableInvalidOwner",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnableUnauthorizedAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ReentrancyGuardReentrantCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "SacrificesPaused",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UUPSUnauthorizedCallContext",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UUPSUnsupportedProxiableUUID",
+    "inputs": [
+      {
+        "name": "slot",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "CapsCrafted",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "shardsUsed",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "capsMinted",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ContractsUpdated",
+    "inputs": [
+      {
+        "name": "relics",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "cosmetics",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "demons",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "cultists",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ConversionsPauseChanged",
+    "inputs": [
+      {
+        "name": "paused",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CosmeticRitualAttempted",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "success",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "cosmeticTypeId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CultistsSacrificed",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DebugCaller",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DebugRevert",
+    "inputs": [
+      {
+        "name": "where",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "indexed": false,
+        "internalType": "bytes"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DemonRitualAttempted",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "success",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "tier",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Initialized",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "KeysSacrificed",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MonthlyCosmeticsSet",
+    "inputs": [
+      {
+        "name": "setId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cosmeticTypeIds",
+        "type": "uint256[]",
+        "indexed": false,
+        "internalType": "uint256[]"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MythicMinted",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tier",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      {
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Paused",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RelicReceived",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "relicId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SacrificesPauseChanged",
+    "inputs": [
+      {
+        "name": "paused",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ShardAwarded",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Unpaused",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Upgraded",
+    "inputs": [
+      {
+        "name": "implementation",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "function",
+    "name": "ASH_VIAL",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "BONE_DAGGER",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "canBurnKeyFor",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "canMintCaps",
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "canMintRelic",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "conversionsPaused",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "convertShardsToRustedCaps",
+    "inputs": [
+      {
+        "name": "shardAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "cosmetics",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract ICosmeticsV2"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "cultists",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract ICultists"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "currentCosmeticTypes",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "demons",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IDemons"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getCurrentCosmeticTypes",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPauseStatus",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "globalPaused",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "sacrificesPaused_",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "conversionsPaused_",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "GLASS_SHARD",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initialize",
+    "inputs": [
+      {
+        "name": "_relics",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cosmetics",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_demons",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cultists",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "LANTERN_FRAGMENT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "maxMythicDemons",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "mythicDemonsMinted",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "pauseConversions",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "paused",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "pauseSacrifices",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "proxiableUUID",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "relics",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IRelics"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "RUSTED_CAP",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "sacrificeForCosmetic",
+    "inputs": [
+      {
+        "name": "fragments",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "masks",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "sacrificeKeys",
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "sacrificeNonce",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "sacrificesPaused",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setContracts",
+    "inputs": [
+      {
+        "name": "_relics",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cosmetics",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_demons",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cultists",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setMonthlyCosmeticTypes",
+    "inputs": [
+      {
+        "name": "typeIds",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "unpauseConversions",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "unpauseSacrifices",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "upgradeToAndCall",
+    "inputs": [
+      {
+        "name": "newImplementation",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "version",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "WORM_EATEN_MASK",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  }
+]

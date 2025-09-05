@@ -1,0 +1,258 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_cosmetics",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_raccoons",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint8",
+        "name": "rarity",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      }
+    ],
+    "name": "BaseImageUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      }
+    ],
+    "name": "CustomImageSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "url",
+        "type": "string"
+      }
+    ],
+    "name": "RenderingServiceUpdated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "baseImageURIs",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cosmetics",
+    "outputs": [
+      {
+        "internalType": "contract CosmeticsV2",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "customBaseImages",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "headId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "faceId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bodyId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "furId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "backgroundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "previewRaccoonWithCosmetic",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "imageURL",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "raccoons",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renderingServiceURL",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "rarity",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      }
+    ],
+    "name": "setBaseImage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      }
+    ],
+    "name": "setCustomImage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "url",
+        "type": "string"
+      }
+    ],
+    "name": "setRenderingService",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

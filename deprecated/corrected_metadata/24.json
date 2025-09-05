@@ -1,0 +1,27 @@
+{
+    "name": "Trash Raccoon #24",
+    "description": "One of 444 weird, chaotic trash raccoons.",
+    "image": "../images/24.png",
+    "attributes": [
+        {
+            "trait_type": "bg",
+            "value": "Untitled_Artwork-6"
+        },
+        {
+            "trait_type": "fur",
+            "value": "Untitled_Artwork-3"
+        },
+        {
+            "trait_type": "body",
+            "value": "Untitled_Artwork-6"
+        },
+        {
+            "trait_type": "face",
+            "value": "Untitled_Artwork-24"
+        },
+        {
+            "trait_type": "head",
+            "value": "Untitled_Artwork-10"
+        }
+    ]
+}

@@ -1,0 +1,48 @@
+{
+  "baseTypeURI": "${BASE_TYPE_URI}",
+  "boundBaseURI": "${BOUND_BASE_URI}",
+  "rarityPools": {
+    "1": [],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": []
+  },
+  "rarityWeights": {
+    "0": [
+      600,
+      250,
+      120,
+      30,
+      0
+    ],
+    "1": [
+      450,
+      300,
+      200,
+      50,
+      0
+    ],
+    "2": [
+      300,
+      320,
+      280,
+      80,
+      20
+    ],
+    "3": [
+      200,
+      320,
+      320,
+      140,
+      20
+    ]
+  },
+  "cooldownBlocks": 2,
+  "ashPerVial": 25,
+  "keyShop": {
+    "enabled": false,
+    "priceWei": "2000000000000000",
+    "treasury": ""
+  }
+}
