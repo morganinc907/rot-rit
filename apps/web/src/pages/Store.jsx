@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast';
 import useKeyShop from '../hooks/useKeyShop';
 import useContracts from '../hooks/useContracts.tsx';
 import { useAddress } from '../hooks/useAddress';
-import AddressSystemDemo from '../components/AddressSystemDemo';
 
 // CosmeticsV2 ABI for fetching data
 const COSMETICS_V2_ABI = [
@@ -226,9 +225,6 @@ export default function Store() {
         <p className="text-center text-gray-300 mb-8">
           Purchase Rusted Caps to sacrifice at the Maw for rare relics and rewards
         </p>
-        
-        {/* Address System Demo */}
-        <AddressSystemDemo />
         
 
         {/* Cap Purchase Section */}
