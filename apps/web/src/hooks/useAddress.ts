@@ -1,5 +1,5 @@
 import { useReadContract } from 'wagmi';
-import { keccak256, toUtf8Bytes } from 'viem';
+import { keccak256, stringToHex } from 'viem';
 
 // AddressRegistry contract address (deployed once, never changes)
 const ADDRESS_REGISTRY = '0xF7FC9caa60f4D12d731B32883498A8D403b9c828' as const;
@@ -18,15 +18,15 @@ export type ContractKey =
 
 // Contract key to bytes32 mapping (for registry lookup)
 const CONTRACT_KEYS: Record<ContractKey, `0x${string}`> = {
-  RELICS: keccak256(toUtf8Bytes('RELICS')),
-  MAW_SACRIFICE: keccak256(toUtf8Bytes('MAW_SACRIFICE')),
-  COSMETICS: keccak256(toUtf8Bytes('COSMETICS')),
-  DEMONS: keccak256(toUtf8Bytes('DEMONS')),
-  CULTISTS: keccak256(toUtf8Bytes('CULTISTS')),
-  KEY_SHOP: keccak256(toUtf8Bytes('KEY_SHOP')),
-  RACCOONS: keccak256(toUtf8Bytes('RACCOONS')),
-  RACCOON_RENDERER: keccak256(toUtf8Bytes('RACCOON_RENDERER')),
-  RITUAL_READ_AGGREGATOR: keccak256(toUtf8Bytes('RITUAL_READ_AGGREGATOR')),
+  RELICS: keccak256(stringToHex('RELICS')),
+  MAW_SACRIFICE: keccak256(stringToHex('MAW_SACRIFICE')),
+  COSMETICS: keccak256(stringToHex('COSMETICS')),
+  DEMONS: keccak256(stringToHex('DEMONS')),
+  CULTISTS: keccak256(stringToHex('CULTISTS')),
+  KEY_SHOP: keccak256(stringToHex('KEY_SHOP')),
+  RACCOONS: keccak256(stringToHex('RACCOONS')),
+  RACCOON_RENDERER: keccak256(stringToHex('RACCOON_RENDERER')),
+  RITUAL_READ_AGGREGATOR: keccak256(stringToHex('RITUAL_READ_AGGREGATOR')),
 };
 
 // Simple ABI for AddressRegistry.get()
