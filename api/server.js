@@ -154,10 +154,114 @@ app.get('/raccoon/:tokenId', async (req, res) => {
   }
 });
 
+// Image rendering endpoint - extracts image from on-chain data URI
+app.get('/render/:tokenId', async (req, res) => {
+  try {
+    const { tokenId } = req.params;
+    const version = req.query.v || 'default';
+
+    console.log(`🖼️ Render request for token ${tokenId}, version=${version}`);
+
+    // Validate tokenId
+    if (!tokenId || isNaN(tokenId)) {
+      return res.status(400).json({ error: 'Invalid token ID' });
+    }
+
+    // Create cache key including version
+    const cacheKey = `render-${tokenId}-${version}`;
+
+    // Check cache first
+    const cached = cache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
+      console.log(`💾 Cache hit for render ${cacheKey}`);
+      res.setHeader('Content-Type', cached.contentType);
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      res.setHeader('X-Cache', 'HIT');
+      return res.send(cached.data);
+    }
+
+    // Wait for an available slot
+    await waitForSlot(cacheKey);
+
+    try {
+      // Call the RaccoonRenderer contract
+      const renderer = new ethers.Contract(RACCOON_RENDERER, RENDERER_ABI, provider);
+
+      console.log(`🔍 Calling renderer.tokenURI(${tokenId}) for image`);
+      const startTime = Date.now();
+
+      const tokenURI = await renderer.tokenURI(tokenId);
+      const duration = Date.now() - startTime;
+      console.log(`✅ Got tokenURI in ${duration}ms for render`);
+
+      // Parse the data URI to extract the image
+      if (tokenURI.startsWith('data:application/json;base64,')) {
+        const base64Data = tokenURI.split(',')[1];
+        const jsonData = Buffer.from(base64Data, 'base64').toString();
+        const metadata = JSON.parse(jsonData);
+
+        // Get the image data URI
+        const imageDataURI = metadata.image;
+
+        if (!imageDataURI) {
+          throw new Error('No image found in metadata');
+        }
+
+        // Parse image data URI (e.g., "data:image/svg+xml;base64,..." or "data:image/gif;base64,...")
+        if (imageDataURI.startsWith('data:')) {
+          const matches = imageDataURI.match(/^data:([^;]+);base64,(.+)$/);
+          if (!matches) {
+            throw new Error('Invalid image data URI format');
+          }
+
+          const contentType = matches[1]; // e.g., "image/svg+xml" or "image/gif"
+          const imageBase64 = matches[2];
+          const imageBuffer = Buffer.from(imageBase64, 'base64');
+
+          // Cache the result
+          cache.set(cacheKey, {
+            data: imageBuffer,
+            contentType,
+            timestamp: Date.now()
+          });
+          console.log(`💾 Cached render ${cacheKey} (${imageBuffer.length} bytes, ${contentType})`);
+
+          res.setHeader('Content-Type', contentType);
+          res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400');
+          res.setHeader('X-Cache', 'MISS');
+          return res.send(imageBuffer);
+        } else {
+          // If it's an HTTP URL, redirect to it
+          return res.redirect(imageDataURI);
+        }
+      }
+
+      // If tokenURI is not a data URI, we can't extract the image
+      res.status(500).json({
+        error: 'Unable to extract image from tokenURI',
+        tokenId
+      });
+
+    } finally {
+      releaseSlot();
+    }
+
+  } catch (error) {
+    console.error('❌ Error rendering image:', error);
+    releaseSlot();
+
+    res.status(500).json({
+      error: 'Failed to render image',
+      message: error.message,
+      tokenId: req.params.tokenId
+    });
+  }
+});
+
 // Fallback for static raccoon metadata (no cosmetics)
 app.get('/static/:tokenId', (req, res) => {
   const { tokenId } = req.params;
-  
+
   // Redirect to IPFS for static metadata
   const ipfsUrl = `https://bafybeihn54iawusfxzqzkxzdcidkgejom22uhwpquqrdl5frmnwhilqi4m.ipfs.dweb.link/${tokenId}.json`;
   res.redirect(ipfsUrl);
