@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { LRUCache } = require('lru-cache');
-const pLimit = require('p-limit');
+const { default: pLimit } = require('p-limit');
 const { renderRaccoon, getEquipmentHash } = require('./renderer');
 
 const app = express();
