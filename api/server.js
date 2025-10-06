@@ -1,22 +1,37 @@
 const express = require('express');
 const cors = require('cors');
 const { ethers } = require('ethers');
+const path = require('path');
+const crypto = require('crypto');
+const sharp = require('sharp');
+const LRU = require('lru-cache');
+const pLimit = require('p-limit');
+const compression = require('compression');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Enable CORS for all routes
+// Enable CORS and compression
 app.use(cors());
 app.use(express.json());
+app.use(compression());
 
-// Simple in-memory cache
+// Simple in-memory cache for metadata
 const cache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+// Image cache and rendering queue
+const resultCache = new LRU({ max: 500, ttl: 1000 * 60 * 10 }); // 10 minutes
+const inflight = new Map();
+const limit = pLimit(4); // max 4 renders at once
 
 // Request queue to prevent overwhelming the RPC
 const requestQueue = new Map();
 const MAX_CONCURRENT = 3; // Only 3 concurrent blockchain calls
 let activeRequests = 0;
+
+// Traits directory (adjust path for your deployment)
+const TRAITS_DIR = path.resolve(__dirname, '../apps/web/public/traits');
 
 // Base Sepolia RPC
 const provider = new ethers.JsonRpcProvider('https://sepolia.base.org');
@@ -154,107 +169,106 @@ app.get('/raccoon/:tokenId', async (req, res) => {
   }
 });
 
-// Image rendering endpoint - extracts image from on-chain data URI
-app.get('/render/:tokenId', async (req, res) => {
-  try {
-    const { tokenId } = req.params;
-    const version = req.query.v || 'default';
+// Utility: stable version hash for caching
+function versionFor({ id, head = 0, face = 0, body = 0, fur = 0, background = 0 }) {
+  const payload = `${id}|h=${head}|f=${face}|b=${body}|u=${fur}|bg=${background}`;
+  return crypto.createHash('sha1').update(payload).digest('hex');
+}
 
-    console.log(`🖼️ Render request for token ${tokenId}, version=${version}`);
+// Build list of layer files (back to front)
+function layerFiles({ head = 0, face = 0, body = 0, fur = 0, background = 0 }) {
+  return [
+    path.join(TRAITS_DIR, 'background', `${background}.png`),
+    path.join(TRAITS_DIR, 'fur', `${fur}.png`),
+    path.join(TRAITS_DIR, 'body', `${body}.png`),
+    path.join(TRAITS_DIR, 'face', `${face}.png`),
+    path.join(TRAITS_DIR, 'head', `${head}.png`),
+  ];
+}
 
-    // Validate tokenId
-    if (!tokenId || isNaN(tokenId)) {
-      return res.status(400).json({ error: 'Invalid token ID' });
-    }
+// Composite PNG layers with sharp
+async function renderPNG({ files, size = 1000 }) {
+  const inputs = await Promise.all(files.map(async (f) =>
+    sharp(f).resize(size, size, {
+      fit: 'contain',
+      background: { r: 0, g: 0, b: 0, alpha: 0 }
+    }).toBuffer()
+  ));
 
-    // Create cache key including version
-    const cacheKey = `render-${tokenId}-${version}`;
+  const img = sharp({
+    create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } }
+  });
 
-    // Check cache first
-    const cached = cache.get(cacheKey);
-    if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
-      console.log(`💾 Cache hit for render ${cacheKey}`);
-      res.setHeader('Content-Type', cached.contentType);
-      res.setHeader('Cache-Control', 'public, max-age=300');
-      res.setHeader('X-Cache', 'HIT');
-      return res.send(cached.data);
-    }
+  return img
+    .composite(inputs.map(buf => ({ input: buf, left: 0, top: 0 })))
+    .png({ compressionLevel: 9, effort: 7, adaptiveFiltering: true })
+    .toBuffer();
+}
 
-    // Wait for an available slot
-    await waitForSlot(cacheKey);
+// Single-flight wrapper to coalesce concurrent requests
+async function singleFlight(key, fn) {
+  if (resultCache.has(key)) return resultCache.get(key);
+  if (inflight.has(key)) return inflight.get(key);
 
+  const p = limit(async () => {
     try {
-      // Call the RaccoonRenderer contract
-      const renderer = new ethers.Contract(RACCOON_RENDERER, RENDERER_ABI, provider);
-
-      console.log(`🔍 Calling renderer.tokenURI(${tokenId}) for image`);
-      const startTime = Date.now();
-
-      const tokenURI = await renderer.tokenURI(tokenId);
-      const duration = Date.now() - startTime;
-      console.log(`✅ Got tokenURI in ${duration}ms for render`);
-
-      // Parse the data URI to extract the image
-      if (tokenURI.startsWith('data:application/json;base64,')) {
-        const base64Data = tokenURI.split(',')[1];
-        const jsonData = Buffer.from(base64Data, 'base64').toString();
-        const metadata = JSON.parse(jsonData);
-
-        // Get the image data URI
-        const imageDataURI = metadata.image;
-
-        if (!imageDataURI) {
-          throw new Error('No image found in metadata');
-        }
-
-        // Parse image data URI (e.g., "data:image/svg+xml;base64,..." or "data:image/gif;base64,...")
-        if (imageDataURI.startsWith('data:')) {
-          const matches = imageDataURI.match(/^data:([^;]+);base64,(.+)$/);
-          if (!matches) {
-            throw new Error('Invalid image data URI format');
-          }
-
-          const contentType = matches[1]; // e.g., "image/svg+xml" or "image/gif"
-          const imageBase64 = matches[2];
-          const imageBuffer = Buffer.from(imageBase64, 'base64');
-
-          // Cache the result
-          cache.set(cacheKey, {
-            data: imageBuffer,
-            contentType,
-            timestamp: Date.now()
-          });
-          console.log(`💾 Cached render ${cacheKey} (${imageBuffer.length} bytes, ${contentType})`);
-
-          res.setHeader('Content-Type', contentType);
-          res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400');
-          res.setHeader('X-Cache', 'MISS');
-          return res.send(imageBuffer);
-        } else {
-          // If it's an HTTP URL, redirect to it
-          return res.redirect(imageDataURI);
-        }
-      }
-
-      // If tokenURI is not a data URI, we can't extract the image
-      res.status(500).json({
-        error: 'Unable to extract image from tokenURI',
-        tokenId
-      });
-
+      const val = await fn();
+      resultCache.set(key, val);
+      return val;
     } finally {
-      releaseSlot();
+      inflight.delete(key);
+    }
+  });
+  inflight.set(key, p);
+  return p;
+}
+
+// Image rendering endpoint - composites layers from query params
+app.get('/render/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const head = Number(req.query.head ?? 0);
+    const face = Number(req.query.face ?? 0);
+    const body = Number(req.query.body ?? 0);
+    const fur = Number(req.query.fur ?? 0);
+    const background = Number(req.query.background ?? 0);
+
+    console.log(`🖼️ Render request for token ${id}: head=${head}, face=${face}, body=${body}, fur=${fur}, bg=${background}`);
+
+    // Stable version for caching
+    const v = versionFor({ id, head, face, body, fur, background });
+    const cacheKey = `png:${id}:${v}`;
+
+    // Conditional GET: 304 if unchanged
+    if (req.headers['if-none-match'] === v && resultCache.has(cacheKey)) {
+      console.log(`💾 304 Not Modified for ${cacheKey}`);
+      res.status(304).end();
+      return;
     }
 
-  } catch (error) {
-    console.error('❌ Error rendering image:', error);
-    releaseSlot();
+    // Prepare layer file paths
+    const files = layerFiles({ head, face, body, fur, background });
 
-    res.status(500).json({
-      error: 'Failed to render image',
-      message: error.message,
-      tokenId: req.params.tokenId
+    // Coalesce concurrent requests for same version
+    const png = await singleFlight(cacheKey, async () => {
+      console.log(`🎨 Rendering ${cacheKey}...`);
+      return renderPNG({ files, size: 1000 });
     });
+
+    console.log(`✅ Rendered ${cacheKey} (${png.length} bytes)`);
+
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('ETag', v);
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=60');
+    res.send(png);
+  } catch (err) {
+    console.error('❌ Render error:', err);
+    // Return tiny transparent PNG on error
+    const empty = await sharp({
+      create: { width: 1, height: 1, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } }
+    }).png().toBuffer();
+    res.setHeader('Content-Type', 'image/png');
+    res.status(200).send(empty);
   }
 });
 
