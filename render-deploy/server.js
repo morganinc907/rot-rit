@@ -1,9 +1,32 @@
 const express = require('express');
 const cors = require('cors');
+const LRU = require('lru-cache');
+const pLimit = require('p-limit');
 const { renderRaccoon, getEquipmentHash } = require('./renderer');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Result cache + in-flight request coalescing
+const resultCache = new LRU({ max: 500, ttl: 10 * 60 * 1000 });   // 10 minutes
+const inflight = new Map();                                        // key -> Promise
+const renderLimit = pLimit(4);                                     // max 4 renders at once
+
+async function singleFlight(key, fn) {
+  if (resultCache.has(key)) return resultCache.get(key);
+  if (inflight.has(key)) return inflight.get(key);
+  const p = renderLimit(async () => {
+    try {
+      const val = await fn();
+      resultCache.set(key, val);
+      return val;
+    } finally {
+      inflight.delete(key);
+    }
+  });
+  inflight.set(key, p);
+  return p;
+}
 
 // Enable CORS and JSON parsing
 app.use(cors());
@@ -14,7 +37,11 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'raccoon-renderer'
+    service: 'raccoon-renderer',
+    cache: {
+      size: resultCache.size,
+      inflight: inflight.size
+    }
   });
 });
 
@@ -38,22 +65,28 @@ app.get('/render/:tokenId', async (req, res) => {
 
     // Generate cache key
     const equipHash = getEquipmentHash(equipped);
-    const etag = `"${tokenId}-${equipHash}"`;
+    const etag = equipHash;
+    const cacheKey = `${tokenId}:${equipHash}`;
 
     // Check if client has cached version
-    if (req.headers['if-none-match'] === etag) {
-      console.log(`   💾 Cache hit - returning 304`);
+    if (req.headers['if-none-match'] === etag && resultCache.has(cacheKey)) {
+      console.log(`   💾 304 Not Modified`);
       return res.status(304).end();
     }
 
-    // Render the raccoon
-    const result = await renderRaccoon(tokenId, equipped, { debug: false });
+    // Render with single-flight (coalesce concurrent requests)
+    const result = await singleFlight(cacheKey, () =>
+      renderRaccoon(tokenId, equipped, { debug: false })
+    );
+
+    console.log(`   ✅ Rendered (cache: ${resultCache.size} items)`);
 
     // Set cache headers
     res.setHeader('Content-Type', result.contentType);
     res.setHeader('ETag', etag);
-    res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
-    res.setHeader('X-Render-Time', result.renderTime);
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=60');
+    res.setHeader('Content-Length', result.buffer.length);
+    res.setHeader('X-Render-Time', `${result.renderTime}ms`);
 
     res.send(result.buffer);
 

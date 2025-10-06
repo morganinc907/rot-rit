@@ -1,10 +1,20 @@
 const sharp = require('sharp');
 const axios = require('axios');
 const crypto = require('crypto');
+const https = require('https');
+const LRU = require('lru-cache');
 
 // Configure sharp for optimal performance
 sharp.cache({ files: 64, items: 400, memory: 512 });
 sharp.concurrency(0); // Auto-detect CPUs
+
+// Asset caches
+const assetCache = new LRU({ max: 300, ttl: 30 * 60 * 1000 }); // 30 minutes
+const normalizedCache = new LRU({ max: 400, ttl: 60 * 60 * 1000 }); // 1 hour
+const metadataCache = new LRU({ max: 200, ttl: 60 * 60 * 1000 }); // 1 hour
+
+// Keep-alive agent for faster HTTP requests
+const agent = new https.Agent({ keepAlive: true });
 
 // Constants from environment
 const IPFS_BASE_CID = process.env.IPFS_BASE_CID || 'bafybeihn54iawusfxzqzkxzdcidkgejom22uhwpquqrdl5frmnwhilqi4m';
@@ -98,16 +108,23 @@ async function ipfsGet(cid, path, options = {}) {
 }
 
 /**
- * Fetch base raccoon metadata from IPFS
+ * Fetch base raccoon metadata from IPFS (with cache)
  */
 async function fetchBaseMetadata(tokenId) {
+  const cached = metadataCache.get(tokenId);
+  if (cached) {
+    console.log(`📦 Base metadata cached for raccoon #${tokenId}`);
+    return cached;
+  }
+
   console.log(`📦 Fetching base metadata for raccoon #${tokenId}...`);
-  return await ipfsGet(IPFS_BASE_CID, `${tokenId}.json`, { json: true });
+  const metadata = await ipfsGet(IPFS_BASE_CID, `${tokenId}.json`, { json: true });
+  metadataCache.set(tokenId, metadata);
+  return metadata;
 }
 
 /**
- * Fetch cosmetic info from blockchain/API
- * Checks for both .gif and .png extensions
+ * Fetch cosmetic info - returns candidate URLs (no HEAD request)
  */
 async function fetchCosmeticInfo(cosmeticId) {
   const typeId = Number(cosmeticId);
@@ -128,34 +145,40 @@ async function fetchCosmeticInfo(cosmeticId) {
   else if (typeId >= 5000 && typeId < 6000) slot = 4; // BACKGROUND
   else return null;
 
-  // Try .gif first (animated), fallback to .png
+  // Return both URLs in priority order (GIF first, then PNG)
   const baseUrl = `https://rotandritual.work/current-cosmetics-r2/${SLOT_NAMES[slot]}/${typeId}`;
-
-  // Check if GIF exists
-  try {
-    const gifResponse = await axios.head(`${baseUrl}.gif`, { timeout: 3000 });
-    if (gifResponse.status === 200) {
-      return { slot, imageUrl: `${baseUrl}.gif`, typeId, isGif: true };
-    }
-  } catch (e) {
-    // GIF doesn't exist, try PNG
-  }
-
-  // Fallback to PNG
-  return { slot, imageUrl: `${baseUrl}.png`, typeId, isGif: false };
+  return {
+    slot,
+    typeId,
+    urls: [`${baseUrl}.gif`, `${baseUrl}.png`]
+  };
 }
 
 /**
- * Download image as buffer with retry
+ * Download image as buffer with cache
  */
 async function downloadImage(url) {
   try {
+    // Check cache first
+    const cached = assetCache.get(url);
+    if (cached) {
+      console.log(`   💾 ${url.substring(url.lastIndexOf('/') + 1)}`);
+      return cached;
+    }
+
     console.log(`   📥 ${url.substring(url.lastIndexOf('/') + 1)}`);
     const response = await axios.get(url, {
       responseType: 'arraybuffer',
-      timeout: 10000
+      timeout: 10000,
+      httpsAgent: agent,
+      validateStatus: (s) => (s >= 200 && s < 300) || s === 404
     });
-    return Buffer.from(response.data);
+
+    if (response.status === 404) return null;
+
+    const buffer = Buffer.from(response.data);
+    assetCache.set(url, buffer);
+    return buffer;
   } catch (error) {
     console.error(`   ❌ Failed: ${error.message}`);
     return null;
@@ -171,15 +194,27 @@ function isGif(buffer) {
 }
 
 /**
- * Normalize layer to consistent size (1000x1000)
+ * Normalize layer to consistent size (1000x1000) with cache
  */
-async function normalizeLayer(buffer) {
-  return await sharp(buffer)
+async function normalizeLayer(buffer, cacheKey) {
+  // Check normalized cache
+  if (cacheKey) {
+    const cached = normalizedCache.get(cacheKey);
+    if (cached) return cached;
+  }
+
+  const normalized = await sharp(buffer)
     .resize(1000, 1000, {
       fit: 'contain',
       background: { r: 0, g: 0, b: 0, alpha: 0 }
     })
     .toBuffer();
+
+  if (cacheKey) {
+    normalizedCache.set(cacheKey, normalized);
+  }
+
+  return normalized;
 }
 
 /**
@@ -192,13 +227,13 @@ async function compositePNG(layers) {
     throw new Error('No layers to composite');
   }
 
-  // Normalize base layer
-  const baseBuffer = await normalizeLayer(layers[0].buffer);
+  // Normalize base layer with cache
+  const baseBuffer = await normalizeLayer(layers[0].buffer, `norm:${layers[0].url}`);
 
-  // Normalize and prepare overlays
+  // Normalize and prepare overlays with cache
   const overlays = await Promise.all(
     layers.slice(1).map(async (layer) => ({
-      input: await normalizeLayer(layer.buffer),
+      input: await normalizeLayer(layer.buffer, `norm:${layer.url}`),
       left: 0,
       top: 0
     }))
@@ -342,37 +377,56 @@ async function renderRaccoon(tokenId, equippedCosmetics, options = {}) {
     const value = chosen[slot];
     const mode = typeof value === 'number' ? 'cosmetic' : 'base';
 
-    let url;
     if (mode === 'cosmetic') {
-      // Cosmetic: numeric id
+      // Cosmetic: numeric id - get candidate URLs
       const cosmeticInfo = await fetchCosmeticInfo(value);
       if (!cosmeticInfo) continue;
-      url = cosmeticInfo.imageUrl;
+
+      layerStack.push({
+        slot,
+        mode,
+        urls: cosmeticInfo.urls,
+        z: i + 1,
+        value
+      });
     } else {
       // Base trait: name string
       const filename = value.endsWith('.png') ? value : `${value}.png`;
-      url = `https://rotandritual.work/traits/${TRAIT_DIRS[slot]}/${filename}`;
-    }
+      const url = `https://rotandritual.work/traits/${TRAIT_DIRS[slot]}/${filename}`;
 
-    layerStack.push({
-      slot,
-      mode,
-      url,
-      z: i + 1,
-      value
-    });
+      layerStack.push({
+        slot,
+        mode,
+        urls: [url],
+        z: i + 1,
+        value
+      });
+    }
   }
 
   console.log(`📥 Downloading ${layerStack.length} layers in z-order...`);
 
   // 4. Download all layers in parallel (bounded concurrency)
+  // Try each URL until one succeeds
   const limit = pLimit(6);
   const downloads = layerStack.map(layer =>
     limit(async () => {
-      const buffer = await downloadImage(layer.url);
+      let buffer, url;
+
+      // Try each candidate URL
+      for (const candidateUrl of layer.urls) {
+        buffer = await downloadImage(candidateUrl);
+        if (buffer) {
+          url = candidateUrl;
+          break;
+        }
+      }
+
       if (!buffer) return null;
+
       return {
         ...layer,
+        url,
         buffer,
         isGif: isGif(buffer)
       };
