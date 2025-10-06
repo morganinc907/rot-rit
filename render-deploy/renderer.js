@@ -3,6 +3,8 @@ const axios = require('axios');
 const crypto = require('crypto');
 const https = require('https');
 const LRU = require('lru-cache');
+const { GifReader } = require('omggif');
+const { GifCodec, GifFrame } = require('gifenc');
 
 // Configure sharp for optimal performance
 sharp.cache({ files: 64, items: 400, memory: 512 });
@@ -257,8 +259,8 @@ async function compositePNG(layers) {
 }
 
 /**
- * Composite layers with GIF handling using sharp's native animated GIF support
- * Much simpler than manual frame-by-frame encoding!
+ * Composite layers with frame-accurate GIF handling
+ * Preserves original frame timing and supports multiple GIF layers
  */
 async function compositeWithGIF(layers) {
   console.log(`🎨 Compositing ${layers.length} layers (including GIFs)...`);
@@ -271,24 +273,24 @@ async function compositeWithGIF(layers) {
     return await compositePNG(layers);
   }
 
-  console.log(`   📹 ${gifLayers.length} GIF layer(s) detected - using sharp native compositing`);
+  console.log(`   📹 ${gifLayers.length} GIF layer(s) detected - using frame-accurate compositing`);
 
-  // For simplicity, use the first GIF as the animation source
-  const gifLayer = gifLayers[0];
+  // Use the top-most (highest z-index) GIF as animation source
+  const gifLayer = gifLayers.sort((a, b) => b.z - a.z)[0];
 
-  // Prepare PNG layers below and above the GIF
+  // Separate layers by z-index relative to the GIF
   const layersBelow = layers.filter(l => l.z < gifLayer.z && !l.isGif);
   const layersAbove = layers.filter(l => l.z > gifLayer.z && !l.isGif);
 
   console.log(`   📊 Layers: ${layersBelow.length} below GIF, GIF at z=${gifLayer.z}, ${layersAbove.length} above`);
 
-  // Start with layers below as the base (composite them into a single PNG)
-  let baseBuffer;
+  // Pre-composite layers below into a single base PNG
+  let basePng;
   if (layersBelow.length > 0) {
-    baseBuffer = await compositePNG(layersBelow);
+    basePng = await compositePNG(layersBelow);
   } else {
-    // No layers below, create a transparent base
-    baseBuffer = await sharp({
+    // Create transparent base
+    basePng = await sharp({
       create: {
         width: 1000,
         height: 1000,
@@ -298,43 +300,76 @@ async function compositeWithGIF(layers) {
     }).png().toBuffer();
   }
 
-  // Now composite the GIF and layers above onto the base
-  const normalizedGif = await sharp(gifLayer.buffer, { animated: true })
-    .resize(1000, 1000, {
-      fit: 'contain',
-      background: { r: 0, g: 0, b: 0, alpha: 0 }
+  // Pre-normalize layers above (with cache)
+  const normalizedAbove = await Promise.all(
+    layersAbove.map(async (layer) => ({
+      buffer: await normalizeLayer(layer.buffer, `norm:${layer.url}`),
+      layer
+    }))
+  );
+
+  // Decode GIF frames
+  const reader = new GifReader(gifLayer.buffer);
+  const numFrames = reader.numFrames();
+  console.log(`   🎞️ Processing ${numFrames} frames...`);
+
+  const frames = [];
+
+  for (let i = 0; i < numFrames; i++) {
+    const frameInfo = reader.frameInfo(i);
+    const delay = frameInfo.delay || 10; // centiseconds (1/100th of a second)
+
+    // Decode frame to RGBA
+    const frameWidth = reader.width;
+    const frameHeight = reader.height;
+    const frameRGBA = Buffer.alloc(frameWidth * frameHeight * 4);
+    reader.decodeAndBlitFrameRGBA(i, frameRGBA);
+
+    // Convert frame to PNG and resize to 1000x1000
+    const framePng = await sharp(frameRGBA, {
+      raw: { width: frameWidth, height: frameHeight, channels: 4 }
     })
-    .gif({ effort: 7, loop: 0, delay: 100 })
-    .toBuffer();
+      .resize(1000, 1000, {
+        fit: 'contain',
+        background: { r: 0, g: 0, b: 0, alpha: 0 }
+      })
+      .png()
+      .toBuffer();
 
-  // Build composite array for layers to overlay
-  const compositeArray = [];
-  compositeArray.push({ input: normalizedGif, gravity: 'center' });
+    // Composite: base → gif frame → layers above
+    const compositeInputs = [{ input: framePng, left: 0, top: 0 }];
 
-  // Add layers above
-  for (const layer of layersAbove) {
-    const normalizedBuffer = await normalizeLayer(layer.buffer);
-    compositeArray.push({ input: normalizedBuffer, gravity: 'center' });
+    // Add layers above
+    for (const { buffer } of normalizedAbove) {
+      compositeInputs.push({ input: buffer, left: 0, top: 0 });
+    }
+
+    // Composite this frame
+    const compositedFrame = await sharp(basePng)
+      .composite(compositeInputs)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    // Create GIF frame with original timing
+    const gifFrame = new GifFrame(1000, 1000, {
+      delayCentisecs: Math.max(1, delay),
+      disposal: 2, // dispose to background
+      transparent: true
+    });
+
+    // Copy RGBA data
+    gifFrame.data.set(compositedFrame.data);
+    frames.push(gifFrame);
   }
 
-  // Composite everything onto the base
-  let composite = sharp(baseBuffer, { animated: true });
+  // Encode as GIF
+  console.log(`   🎬 Encoding ${frames.length} frames...`);
+  const codec = new GifCodec();
+  const { buffer: gifBuffer } = codec.encodeGif(frames, { loops: 0 });
 
-  if (compositeArray.length > 0) {
-    composite = composite.composite(compositeArray);
-  }
-
-  // Output as animated GIF
-  const result = await composite
-    .gif({
-      effort: 7,  // Compression effort (1-10, higher = smaller file but slower)
-      loop: 0,    // Loop forever
-      delay: 100  // Default delay between frames (ms), will use original if available
-    })
-    .toBuffer();
-
-  console.log(`   ✅ Composited animated GIF (${result.length} bytes)`);
-  return result;
+  console.log(`   ✅ Composited animated GIF (${gifBuffer.length} bytes)`);
+  return Buffer.from(gifBuffer);
 }
 
 /**
