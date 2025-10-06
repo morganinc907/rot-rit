@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const axios = require('axios');
 const crypto = require('crypto');
 const https = require('https');
-const LRU = require('lru-cache');
+const { LRUCache } = require('lru-cache');
 const { GifReader } = require('omggif');
 const { GifCodec, GifFrame } = require('gifenc');
 
@@ -11,9 +11,9 @@ sharp.cache({ files: 64, items: 400, memory: 512 });
 sharp.concurrency(0); // Auto-detect CPUs
 
 // Asset caches
-const assetCache = new LRU({ max: 300, ttl: 30 * 60 * 1000 }); // 30 minutes
-const normalizedCache = new LRU({ max: 400, ttl: 60 * 60 * 1000 }); // 1 hour
-const metadataCache = new LRU({ max: 200, ttl: 60 * 60 * 1000 }); // 1 hour
+const assetCache = new LRUCache({ max: 300, ttl: 30 * 60 * 1000 }); // 30 minutes
+const normalizedCache = new LRUCache({ max: 400, ttl: 60 * 60 * 1000 }); // 1 hour
+const metadataCache = new LRUCache({ max: 200, ttl: 60 * 60 * 1000 }); // 1 hour
 
 // Keep-alive agent for faster HTTP requests
 const agent = new https.Agent({ keepAlive: true });

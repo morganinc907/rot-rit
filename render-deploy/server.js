@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const LRU = require('lru-cache');
+const { LRUCache } = require('lru-cache');
 const pLimit = require('p-limit');
 const { renderRaccoon, getEquipmentHash } = require('./renderer');
 
@@ -8,9 +8,9 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Result cache + in-flight request coalescing
-const resultCache = new LRU({ max: 500, ttl: 10 * 60 * 1000 });   // 10 minutes
-const inflight = new Map();                                        // key -> Promise
-const renderLimit = pLimit(4);                                     // max 4 renders at once
+const resultCache = new LRUCache({ max: 500, ttl: 10 * 60 * 1000 });   // 10 minutes
+const inflight = new Map();                                             // key -> Promise
+const renderLimit = pLimit(4);                                          // max 4 renders at once
 
 async function singleFlight(key, fn) {
   if (resultCache.has(key)) return resultCache.get(key);
