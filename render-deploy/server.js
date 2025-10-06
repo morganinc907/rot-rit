@@ -102,9 +102,20 @@ app.get('/raccoon/:tokenId', async (req, res) => {
 
     console.log(`   ✅ Equipped: [${equipped.join(', ')}]`);
 
-    // Build image URL pointing to our render endpoint
-    const equipHash = getEquipmentHash(equipped);
-    const imageUrl = `https://rotrit5.onrender.com/render/${tokenId}?head=${equipped[0]}&face=${equipped[1]}&body=${equipped[2]}&fur=${equipped[3]}&background=${equipped[4]}`;
+    // Build image URL
+    const noneEquipped = equipped.every(n => n === 0);
+    let imageUrl;
+
+    if (noneEquipped) {
+      // Fast path: use static base image directly (no rendering needed)
+      imageUrl = `https://ipfs.io/ipfs/bafybeiaxmevcthi76k45i6buodpefmoavhdxdnsxrmliedytkzk4n2zt24/${tokenId}.png`;
+      console.log(`   ⚡ Using base image (no cosmetics)`);
+    } else {
+      // With cosmetics: point to render endpoint
+      const equipHash = getEquipmentHash(equipped);
+      imageUrl = `https://rotrit5.onrender.com/render/${tokenId}?head=${equipped[0]}&face=${equipped[1]}&body=${equipped[2]}&fur=${equipped[3]}&background=${equipped[4]}`;
+      console.log(`   🎨 Using rendered image with cosmetics`);
+    }
 
     // Build metadata JSON
     const metadata = {
@@ -157,6 +168,17 @@ app.get('/render/:tokenId', async (req, res) => {
     ];
 
     console.log(`   Equipped: [${equipped.join(', ')}]`);
+
+    // FAST PATH: If no cosmetics equipped, redirect to static base image
+    const noneEquipped = equipped.every(n => n === 0);
+    if (noneEquipped) {
+      const baseImageUrl = `https://ipfs.io/ipfs/bafybeiaxmevcthi76k45i6buodpefmoavhdxdnsxrmliedytkzk4n2zt24/${tokenId}.png`;
+      console.log(`   ⚡ Fast path: No cosmetics, redirecting to base image`);
+
+      // 302 redirect to IPFS base image (CDN will cache it)
+      res.redirect(302, baseImageUrl);
+      return;
+    }
 
     // Generate cache key
     const equipHash = getEquipmentHash(equipped);
