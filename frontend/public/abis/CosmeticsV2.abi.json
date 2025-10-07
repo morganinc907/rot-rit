@@ -1,0 +1,144 @@
+[
+  {
+    "type": "function",
+    "name": "getEquippedCosmetics",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "raccoonId", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "", "type": "uint256[5]" }
+    ]
+  },
+  {
+    "type": "function", 
+    "name": "getWardrobePage",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "raccoonId", "type": "uint256" },
+      { "name": "slot", "type": "uint256" },
+      { "name": "start", "type": "uint256" },
+      { "name": "count", "type": "uint256" }
+    ],
+    "outputs": [
+      { 
+        "name": "", 
+        "type": "tuple",
+        "components": [
+          { "name": "items", "type": "tuple[]", "components": [
+            { "name": "baseTypeId", "type": "uint256" },
+            { "name": "boundId", "type": "uint256" },
+            { "name": "boundAt", "type": "uint256" }
+          ]},
+          { "name": "equippedIndex", "type": "uint256" },
+          { "name": "total", "type": "uint256" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getCosmeticInfo",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "typeId", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "name", "type": "string" },
+      { "name": "imageURI", "type": "string" },
+      { "name": "previewLayerURI", "type": "string" },
+      { "name": "rarity", "type": "uint8" },
+      { "name": "slot", "type": "uint8" },
+      { "name": "active", "type": "bool" },
+      { "name": "currentSupply", "type": "uint256" },
+      { "name": "maxSupply", "type": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "equipCosmetic",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "raccoonId", "type": "uint256" },
+      { "name": "slot", "type": "uint256" },
+      { "name": "itemIndex", "type": "uint256" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "unequipSlot", 
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "raccoonId", "type": "uint256" },
+      { "name": "slot", "type": "uint256" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "bindToRaccoon",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "raccoonId", "type": "uint256" },
+      { "name": "typeId", "type": "uint256" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "balanceOf",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "account", "type": "address" },
+      { "name": "id", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "", "type": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "balanceOfBatch",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "accounts", "type": "address[]" },
+      { "name": "ids", "type": "uint256[]" }
+    ],
+    "outputs": [
+      { "name": "", "type": "uint256[]" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TransferSingle",
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "operator", "type": "address" },
+      { "indexed": true, "name": "from", "type": "address" },
+      { "indexed": true, "name": "to", "type": "address" },
+      { "indexed": false, "name": "id", "type": "uint256" },
+      { "indexed": false, "name": "value", "type": "uint256" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "CosmeticBound",
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "raccoonId", "type": "uint256" },
+      { "indexed": true, "name": "typeId", "type": "uint256" },
+      { "indexed": false, "name": "boundId", "type": "uint256" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "CosmeticEquipped",
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "raccoonId", "type": "uint256" },
+      { "indexed": false, "name": "slot", "type": "uint256" },
+      { "indexed": false, "name": "boundId", "type": "uint256" }
+    ]
+  }
+]

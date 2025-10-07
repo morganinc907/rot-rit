@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Raccoon Cache</title>
+</head>
+<body>
+    <h1>Clearing Raccoon Metadata Cache...</h1>
+    <pre id="output"></pre>
+    <script>
+        const output = document.getElementById('output');
+        let cleared = 0;
+        
+        // Clear all raccoon_metadata_* keys
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('raccoon_metadata_')) {
+                localStorage.removeItem(key);
+                cleared++;
+                output.textContent += `Cleared: ${key}\n`;
+            }
+        });
+        
+        output.textContent += `\n✅ Cleared ${cleared} cached raccoon metadata entries\n`;
+        output.textContent += `\nRefresh your app to fetch fresh metadata with base traits!`;
+    </script>
+</body>
+</html>

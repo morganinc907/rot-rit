@@ -1,0 +1,363 @@
+/* THE MAW - Dark Landfill Aesthetic */
+.maw-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1a0b0b 0%, #0d0d0d 50%, #000000 100%);
+}
+
+/* Environment Layers */
+.maw-environment {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.landfill-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(85, 107, 47, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(105, 105, 105, 0.05) 0%, transparent 50%);
+  filter: blur(1px);
+}
+
+.toxic-fog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(128, 0, 128, 0.03) 0%,
+    rgba(0, 128, 0, 0.02) 25%,
+    rgba(255, 165, 0, 0.01) 50%,
+    rgba(128, 0, 128, 0.03) 75%,
+    rgba(0, 128, 0, 0.02) 100%
+  );
+  animation: toxic-drift 20s ease-in-out infinite;
+}
+
+.floating-debris {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(139, 69, 19, 0.3) 1px, transparent 1px),
+    radial-gradient(circle at 30% 70%, rgba(85, 107, 47, 0.2) 1px, transparent 1px),
+    radial-gradient(circle at 70% 30%, rgba(105, 105, 105, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 90% 80%, rgba(128, 0, 0, 0.2) 1px, transparent 1px);
+  animation: debris-float 30s linear infinite;
+}
+
+/* Main Pit Container */
+.maw-pit-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  z-index: 10;
+}
+
+/* The Maw Pit */
+.maw-pit {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    #000000 0%,
+    #1a0606 30%,
+    #2d0a0a 60%,
+    #0d0d0d 100%
+  );
+  box-shadow: 
+    inset 0 0 100px rgba(0, 0, 0, 0.9),
+    0 0 100px rgba(139, 0, 139, 0.3),
+    0 0 200px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.maw-pit:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    inset 0 0 100px rgba(0, 0, 0, 0.9),
+    0 0 150px rgba(139, 0, 139, 0.5),
+    0 0 300px rgba(255, 0, 0, 0.2);
+}
+
+.maw-pit.feeding {
+  animation: pit-feeding 2s ease-in-out;
+  box-shadow: 
+    inset 0 0 100px rgba(0, 0, 0, 0.9),
+    0 0 200px rgba(255, 0, 0, 0.6),
+    0 0 400px rgba(139, 0, 139, 0.4);
+}
+
+.maw-pit.spinning {
+  animation: pit-spinning 3s ease-in-out;
+}
+
+/* Pit Glow Effect */
+.pit-glow {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(139, 0, 139, 0.1) 0%,
+    rgba(255, 0, 0, 0.05) 50%,
+    transparent 100%
+  );
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+/* Vortex Effect */
+.pit-vortex {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+}
+
+.vortex-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  border: 1px solid rgba(139, 0, 139, 0.1);
+  border-radius: 50%;
+  animation: vortex-spin 3s linear infinite;
+}
+
+/* Maw Eyes */
+.maw-eyes {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 60px;
+  z-index: 5;
+}
+
+.eye {
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #ff0000 0%, #8b0000 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px rgba(255, 0, 0, 0.6),
+    inset 0 0 5px rgba(0, 0, 0, 0.5);
+  animation: eye-blink 6s ease-in-out infinite;
+}
+
+.eye.left { animation-delay: 0.3s; }
+.eye.right { animation-delay: 0.1s; }
+
+/* Feeding Particles */
+.feeding-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #ff6b6b 0%, #8b0000 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.8);
+}
+
+/* Side Panels */
+.sacrifice-panel {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  height: 600px;
+  background: rgba(26, 11, 11, 0.9);
+  border: 2px solid #8b0000;
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  z-index: 20;
+}
+
+.rewards-panel {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  height: 600px;
+  background: rgba(11, 26, 11, 0.9);
+  border: 2px solid #4a7c59;
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  z-index: 20;
+}
+
+/* Floating UI */
+.maw-ui {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 30;
+}
+
+.maw-title h1 {
+  font-size: 48px;
+  font-weight: bold;
+  color: #ff0000;
+  text-shadow: 
+    0 0 20px rgba(255, 0, 0, 0.8),
+    0 0 40px rgba(139, 0, 139, 0.6);
+  margin: 0;
+  letter-spacing: 4px;
+  animation: title-flicker 3s ease-in-out infinite;
+}
+
+.maw-title p {
+  font-size: 16px;
+  color: #8b4513;
+  margin: 10px 0 0 0;
+  font-style: italic;
+  text-shadow: 0 0 10px rgba(139, 69, 19, 0.6);
+}
+
+.connect-warning {
+  background: rgba(139, 0, 0, 0.2);
+  border: 1px solid #ff0000;
+  color: #ff6b6b;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin-top: 20px;
+  animation: warning-pulse 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes toxic-drift {
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  25% { transform: translateX(-20px) translateY(-10px) rotate(1deg); }
+  50% { transform: translateX(10px) translateY(-20px) rotate(-0.5deg); }
+  75% { transform: translateX(-10px) translateY(10px) rotate(0.5deg); }
+}
+
+@keyframes debris-float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100vh); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes vortex-spin {
+  0% { transform: translate(-50%, -50%) rotateZ(0deg); }
+  100% { transform: translate(-50%, -50%) rotateZ(360deg); }
+}
+
+@keyframes eye-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes pit-feeding {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.1); box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.8), 0 0 200px rgba(255, 0, 0, 0.6); }
+  50% { transform: scale(0.95); }
+  75% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pit-spinning {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+@keyframes title-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  75% { opacity: 1; }
+  85% { opacity: 0.9; }
+  90% { opacity: 1; }
+}
+
+@keyframes warning-pulse {
+  0%, 100% { background: rgba(139, 0, 0, 0.2); }
+  50% { background: rgba(139, 0, 0, 0.4); }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .sacrifice-panel, .rewards-panel {
+    width: 280px;
+    left: 20px;
+  }
+  .rewards-panel {
+    right: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .maw-pit-container {
+    width: 400px;
+    height: 400px;
+  }
+  .maw-pit {
+    width: 300px;
+    height: 300px;
+  }
+  .sacrifice-panel, .rewards-panel {
+    position: fixed;
+    bottom: 20px;
+    width: calc(50% - 30px);
+    height: 200px;
+    top: auto;
+    transform: none;
+  }
+  .sacrifice-panel {
+    left: 20px;
+  }
+  .rewards-panel {
+    right: 20px;
+  }
+}

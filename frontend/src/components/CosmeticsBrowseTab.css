@@ -1,0 +1,299 @@
+/* Cosmetics Browse Tab */
+.cosmetics-browse-tab {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.browse-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* Preview Section */
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Raccoon Selector Button */
+.raccoon-selector-button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  color: #e9d5ff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  max-width: 400px;
+}
+
+.raccoon-selector-button:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: #8b5cf6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.menu-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.raccoon-label {
+  flex: 1;
+  text-align: left;
+}
+
+.dropdown-icon {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* Preview Container */
+.preview-container {
+  width: 100%;
+  max-width: 450px;
+  aspect-ratio: 1;
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.15), rgba(0, 0, 0, 0.6));
+  border: 3px solid rgba(139, 92, 246, 0.4);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(139, 92, 246, 0.1);
+  position: relative;
+  animation: preview-glow 3s ease-in-out infinite;
+}
+
+@keyframes preview-glow {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(139, 92, 246, 0.1), 0 0 40px rgba(139, 92, 246, 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 100px rgba(139, 92, 246, 0.2), 0 0 60px rgba(139, 92, 246, 0.4);
+  }
+}
+
+/* Scope to CosmeticPreview root to avoid global overrides */
+.preview-container .cosmetic-preview-root {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-icon {
+  font-size: 4rem;
+}
+
+.preview-empty p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  max-width: 450px;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e9d5ff;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Wardrobe Slots */
+.wardrobe-slots-section {
+  width: 100%;
+}
+
+.section-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e9d5ff;
+}
+
+.wardrobe-slots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(139, 92, 246, 0.25);
+  border-radius: 16px;
+}
+
+.slot-card {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border: 3px solid rgba(139, 92, 246, 0.35);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.slot-card.active {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.45);
+}
+
+.slot-card.has-cosmetic {
+  border-color: #a78bfa;
+}
+
+.slot-preview,
+.slot-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slot-icon {
+  font-size: 2rem;
+  opacity: 0.4;
+  transition: all 0.2s;
+}
+
+.slot-card:hover .slot-icon {
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
+.slot-label {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.75rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.slot-card:hover .slot-label {
+  opacity: 1;
+}
+
+.slot-name {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #e9d5ff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Filter Indicator */
+.filter-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  color: #e9d5ff;
+  font-size: 0.9rem;
+}
+
+.clear-filter {
+  background: rgba(139, 92, 246, 0.3);
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  color: #e9d5ff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-filter:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .cosmetics-browse-tab { padding: 1rem; }
+  .browse-content { gap: 2rem; }
+  .preview-container { max-width: 100%; }
+  .action-buttons { flex-direction: column; max-width: 100%; }
+  .wardrobe-slots { gap: 1rem; padding: 1rem; }
+  .slot-card { width: 70px; height: 70px; }
+  .slot-icon { font-size: 1.5rem; }
+  .section-title { font-size: 1.25rem; }
+}
+
+@media (max-width: 480px) {
+  .wardrobe-slots { gap: 0.75rem; padding: 0.75rem; }
+  .slot-card { width: 55px; height: 55px; border-width: 2px; }
+  .slot-icon { font-size: 1.2rem; }
+}

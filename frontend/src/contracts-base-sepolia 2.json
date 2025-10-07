@@ -1,0 +1,16 @@
+{
+  "relics": "0x1933D91B6bf8D6bc4Eac03486DAcF4fFf1313f0b",
+  "raccoons": "0xE2DA9cC68789A52c4594FB4276823165734f0F28",
+  "cultists": "0x2D7cD25A014429282062298d2F712FA7983154B9",
+  "demons": "0xf830dcC09ba6BB0Eb575aD06E369f3483A65c5bF",
+  "cosmetics": "0x5D4E264c978860F2C73a689F414f302ad23dC5FB",
+  "keyShop": "0x10aa8e442a28c1a1cd157f26f0f7050efc29f094",
+  "mawSacrifice": "0x2f7bf97D8a0d955B46EC89d383BA43D847e359b7",
+  "raccoonRenderer": "0x5c83B09AAb6ac95F1DFc9B6CEE66418D1D94d0fF",
+  "ritualReadAggregator": "0xe14830B91Bf666E51305a89C1196d0e88bad98a2",
+  "chainId": 84532,
+  "blockNumber": 30483045,
+  "keyPrice": "0.002",
+  "raccoonPrice": "0.0",
+  "description": "UPDATED: New Raccoons contract with working chain-first resolution & dynamic cosmetics!"
+}

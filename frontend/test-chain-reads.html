@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chain-First Test</title>
+</head>
+<body>
+  <h1>Chain-First Address Resolution Test</h1>
+  <div id="output"></div>
+
+  <script type="module">
+    import { createPublicClient, http } from 'https://esm.sh/viem@2.7.0';
+    import { baseSepolia } from 'https://esm.sh/viem@2.7.0/chains';
+
+    const output = document.getElementById('output');
+
+    async function testChainReads() {
+      try {
+        output.innerHTML += '<p>Creating client...</p>';
+
+        const client = createPublicClient({
+          chain: baseSepolia,
+          transport: http('https://base-sepolia.g.alchemy.com/v2/zKNiUSIu9BaCLgkB0f4x6')
+        });
+
+        const RELICS = '0x1933D91B6bf8D6bc4Eac03486DAcF4fFf1313f0b';
+        const RELICS_ABI = [
+          { "type":"function", "name":"mawSacrifice", "stateMutability":"view", "inputs":[], "outputs":[{"type":"address"}] }
+        ];
+        const MAW_ABI = [
+          { "type":"function", "name":"cosmetics", "stateMutability":"view", "inputs":[], "outputs":[{"type":"address"}] }
+        ];
+
+        output.innerHTML += '<p>Reading MAW from Relics...</p>';
+        const maw = await client.readContract({
+          address: RELICS,
+          abi: RELICS_ABI,
+          functionName: 'mawSacrifice'
+        });
+        output.innerHTML += `<p style="color: green;">✅ MAW = ${maw}</p>`;
+
+        output.innerHTML += '<p>Reading Cosmetics from MAW...</p>';
+        const cosmetics = await client.readContract({
+          address: maw,
+          abi: MAW_ABI,
+          functionName: 'cosmetics'
+        });
+        output.innerHTML += `<p style="color: green;">✅ Cosmetics = ${cosmetics}</p>`;
+
+        output.innerHTML += '<p style="color: green; font-weight: bold;">✅ Chain reads successful!</p>';
+      } catch (error) {
+        output.innerHTML += `<p style="color: red;">❌ Error: ${error.message}</p>`;
+        console.error(error);
+      }
+    }
+
+    testChainReads();
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+.cosmetic-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.cosmetic-modal-content {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 650px;
+  width: 90%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+}
+
+.cosmetic-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cosmetic-modal-header h2 {
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.cosmetic-slot-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.slot-button {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 12px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 12px;
+}
+
+.slot-button.active {
+  background: #444;
+  border-color: #999;
+}
+
+.cosmetic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+  overflow-y: auto;
+  padding: 5px;
+  max-height: 60vh;
+}
+
+.cosmetic-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 10px;
+  background: #2a2a2a;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.cosmetic-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.cosmetic-item.equipped {
+  background: rgba(255, 215, 0, 0.2);
+  border: 2px solid gold;
+}
+
+.cosmetic-thumbnail {
+  width: 100%;
+  height: auto;
+  margin-bottom: 6px;
+  pointer-events: none;
+}
+
+.cosmetic-name {
+  font-size: 0.8rem;
+  color: #fff;
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+.cosmetic-rarity {
+  font-size: 0.7rem;
+  text-transform: capitalize;
+  color: #ccc;
+}
+
+/* Rarity glows */
+.rarity-common { box-shadow: 0 0 6px #999; }
+.rarity-rare { box-shadow: 0 0 8px #2196f3; }
+.rarity-epic { box-shadow: 0 0 8px #9c27b0; }
+.rarity-legendary { box-shadow: 0 0 10px #ff9800; }
+.rarity-mythic { box-shadow: 0 0 12px #e91e63; }
