@@ -31,8 +31,10 @@ const requestQueue = new Map();
 const MAX_CONCURRENT = 3; // Only 3 concurrent blockchain calls
 let activeRequests = 0;
 
-// Traits directory (adjust path for your deployment)
-const TRAITS_DIR = path.resolve(__dirname, '../apps/web/public/traits');
+// R2 CDN URLs for traits/cosmetics
+const COSMETICS_CDN = process.env.COSMETICS_CDN || 'https://rotandritual.work';
+const BASE_TRAITS_PATH = 'traits';
+const COSMETICS_PATH = 'current-cosmetics-r2';
 
 // Base Sepolia RPC
 const provider = new ethers.JsonRpcProvider('https://sepolia.base.org');
@@ -176,27 +178,129 @@ app.get('/raccoon/:tokenId', async (req, res) => {
   }
 });
 
-// Utility: stable version hash for caching
-function versionFor({ id, head = 0, face = 0, body = 0, fur = 0, background = 0 }) {
-  const payload = `${id}|h=${head}|f=${face}|b=${body}|u=${fur}|bg=${background}`;
-  return crypto.createHash('sha1').update(payload).digest('hex');
+// Map cosmetic ID ranges to slot names
+function getSlotName(cosmeticId) {
+  if (cosmeticId >= 1000 && cosmeticId < 2000) return 'head';
+  if (cosmeticId >= 2000 && cosmeticId < 3000) return 'face';
+  if (cosmeticId >= 3000 && cosmeticId < 4000) return 'body';
+  if (cosmeticId >= 4000 && cosmeticId < 5000) return 'fur';
+  if (cosmeticId >= 5000 && cosmeticId < 6000) return 'background';
+  return null;
 }
 
-// Build list of layer files (back to front)
-function layerFiles({ head = 0, face = 0, body = 0, fur = 0, background = 0 }) {
-  return [
-    path.join(TRAITS_DIR, 'background', `${background}.png`),
-    path.join(TRAITS_DIR, 'fur', `${fur}.png`),
-    path.join(TRAITS_DIR, 'body', `${body}.png`),
-    path.join(TRAITS_DIR, 'face', `${face}.png`),
-    path.join(TRAITS_DIR, 'head', `${head}.png`),
-  ];
+// Get raccoon's base traits from IPFS metadata
+async function getBaseTraits(tokenId) {
+  const metadataUrl = `https://bafybeihn54iawusfxzqzkxzdcidkgejom22uhwpquqrdl5frmnwhilqi4m.ipfs.dweb.link/${tokenId}.json`;
+  const response = await fetch(metadataUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch metadata for token ${tokenId}`);
+  }
+  const metadata = await response.json();
+
+  // Extract trait values from attributes
+  // Metadata uses: bg, fur, body, face, head
+  const traits = {};
+  for (const attr of metadata.attributes || []) {
+    const traitType = attr.trait_type.toLowerCase();
+    if (traitType === 'bg') {
+      traits.background = attr.value;
+    } else {
+      traits[traitType] = attr.value;
+    }
+  }
+
+  return traits;
 }
 
-// Composite PNG layers with sharp
-async function renderPNG({ files, size = 1000 }) {
-  const inputs = await Promise.all(files.map(async (f) =>
-    sharp(f).resize(size, size, {
+// Build list of layer URLs (back to front)
+async function layerUrls({ tokenId, head = 0, face = 0, body = 0, fur = 0, background = 0 }) {
+  const layers = [];
+
+  // If any slot is 0, we need the base traits
+  const needsBaseTraits = head === 0 || face === 0 || body === 0 || fur === 0 || background === 0;
+  let baseTraits = {};
+
+  if (needsBaseTraits) {
+    baseTraits = await getBaseTraits(tokenId);
+  }
+
+  // Background (5bg)
+  if (background === 0) {
+    const traitValue = baseTraits.background || '0';
+    layers.push(`${COSMETICS_CDN}/${BASE_TRAITS_PATH}/5bg/${traitValue}.png`);
+  } else {
+    layers.push(`${COSMETICS_CDN}/${COSMETICS_PATH}/background/${background}.png`);
+  }
+
+  // Fur (4fur)
+  if (fur === 0) {
+    const traitValue = baseTraits.fur || '0';
+    layers.push(`${COSMETICS_CDN}/${BASE_TRAITS_PATH}/4fur/${traitValue}.png`);
+  } else {
+    layers.push(`${COSMETICS_CDN}/${COSMETICS_PATH}/fur/${fur}.png`);
+  }
+
+  // Body (3body)
+  if (body === 0) {
+    const traitValue = baseTraits.body || '0';
+    layers.push(`${COSMETICS_CDN}/${BASE_TRAITS_PATH}/3body/${traitValue}.png`);
+  } else {
+    layers.push(`${COSMETICS_CDN}/${COSMETICS_PATH}/body/${body}.png`);
+  }
+
+  // Face (2face)
+  if (face === 0) {
+    const traitValue = baseTraits.face || '0';
+    layers.push(`${COSMETICS_CDN}/${BASE_TRAITS_PATH}/2face/${traitValue}.png`);
+  } else {
+    layers.push(`${COSMETICS_CDN}/${COSMETICS_PATH}/face/${face}.png`);
+  }
+
+  // Head (1head)
+  if (head === 0) {
+    const traitValue = baseTraits.head || '0';
+    layers.push(`${COSMETICS_CDN}/${BASE_TRAITS_PATH}/1head/${traitValue}.png`);
+  } else {
+    layers.push(`${COSMETICS_CDN}/${COSMETICS_PATH}/head/${head}.png`);
+  }
+
+  return layers;
+}
+
+// Fetch image from URL with retry logic
+async function fetchImage(url, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        if (i < retries - 1 && (response.status === 502 || response.status === 503)) {
+          // Retry on server errors
+          console.log(`   ⚠️  Retry ${i + 1}/${retries} for ${url} (${response.status})`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
+          continue;
+        }
+        throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+      }
+      return Buffer.from(await response.arrayBuffer());
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`   ⚠️  Retry ${i + 1}/${retries} for ${url} (${error.message})`);
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
+// Composite PNG layers with sharp (from URLs)
+async function renderPNG({ urls, size = 1000 }) {
+  // Fetch all layers concurrently
+  const buffers = await Promise.all(urls.map(url => fetchImage(url)));
+
+  // Resize all layers to the same size
+  const inputs = await Promise.all(buffers.map(buf =>
+    sharp(buf).resize(size, size, {
       fit: 'contain',
       background: { r: 0, g: 0, b: 0, alpha: 0 }
     }).toBuffer()
@@ -294,9 +398,10 @@ app.get('/render/:id', async (req, res) => {
       tokenId,
       version,
       renderFn: async () => {
-        // Render the image
-        const files = layerFiles({ head, face, body, fur, background });
-        const png = await renderPNG({ files, size: 1000 });
+        // Render the image (fetch layers from R2 CDN)
+        const urls = await layerUrls({ tokenId, head, face, body, fur, background });
+        console.log(`   📦 Fetching layers:`, urls);
+        const png = await renderPNG({ urls, size: 1000 });
 
         // Upload to R2 with immutable cache headers
         await r2.upload({ tokenId, version, buffer: png, ext: 'png' });
