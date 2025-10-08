@@ -1,12 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { ethers } = require('ethers');
 const path = require('path');
 const crypto = require('crypto');
 const sharp = require('sharp');
-const LRU = require('lru-cache');
-const pLimit = require('p-limit');
+const { LRUCache } = require('lru-cache');
 const compression = require('compression');
+const r2 = require('./r2-storage');
+const { renderQueue } = require('./render-queue');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -20,10 +22,9 @@ app.use(compression());
 const cache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-// Image cache and rendering queue
-const resultCache = new LRU({ max: 500, ttl: 1000 * 60 * 10 }); // 10 minutes
+// Image cache (legacy, kept for old /render endpoint fallback)
+const resultCache = new LRUCache({ max: 500, ttl: 1000 * 60 * 10 }); // 10 minutes
 const inflight = new Map();
-const limit = pLimit(4); // max 4 renders at once
 
 // Request queue to prevent overwhelming the RPC
 const requestQueue = new Map();
@@ -52,12 +53,18 @@ const RENDERER_ABI = [
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     contracts: {
       renderer: RACCOON_RENDERER
-    }
+    },
+    r2: {
+      enabled: !!process.env.R2_ACCOUNT_ID,
+      bucket: process.env.R2_BUCKET_NAME,
+      publicUrl: process.env.R2_PUBLIC_URL
+    },
+    queue: renderQueue.getStats()
   });
 });
 
@@ -223,52 +230,120 @@ async function singleFlight(key, fn) {
   return p;
 }
 
-// Image rendering endpoint - composites layers from query params
+// Image rendering endpoint - PRSS pattern (Pre-Render → Store → Serve)
 app.get('/render/:id', async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const tokenId = Number(req.params.id);
     const head = Number(req.query.head ?? 0);
     const face = Number(req.query.face ?? 0);
     const body = Number(req.query.body ?? 0);
     const fur = Number(req.query.fur ?? 0);
     const background = Number(req.query.background ?? 0);
 
-    console.log(`🖼️ Render request for token ${id}: head=${head}, face=${face}, body=${body}, fur=${fur}, bg=${background}`);
+    console.log(`🖼️ Render request for token ${tokenId}: head=${head}, face=${face}, body=${body}, fur=${fur}, bg=${background}`);
 
-    // Stable version for caching
-    const v = versionFor({ id, head, face, body, fur, background });
-    const cacheKey = `png:${id}:${v}`;
-
-    // Conditional GET: 304 if unchanged
-    if (req.headers['if-none-match'] === v && resultCache.has(cacheKey)) {
-      console.log(`💾 304 Not Modified for ${cacheKey}`);
-      res.status(304).end();
-      return;
+    // FAST PATH: If no cosmetics equipped, redirect to static IPFS base image
+    const noneEquipped = head === 0 && face === 0 && body === 0 && fur === 0 && background === 0;
+    if (noneEquipped) {
+      const baseImageUrl = `https://ipfs.io/ipfs/bafybeiaxmevcthi76k45i6buodpefmoavhdxdnsxrmliedytkzk4n2zt24/${tokenId}.png`;
+      console.log(`   ⚡ Fast path: No cosmetics, redirecting to base image`);
+      return res.redirect(302, baseImageUrl);
     }
 
-    // Prepare layer file paths
-    const files = layerFiles({ head, face, body, fur, background });
+    // Generate version hash for this appearance
+    const equipped = [head, face, body, fur, background];
+    const version = r2.versionHash({ tokenId, equipped });
 
-    // Coalesce concurrent requests for same version
-    const png = await singleFlight(cacheKey, async () => {
-      console.log(`🎨 Rendering ${cacheKey}...`);
-      return renderPNG({ files, size: 1000 });
+    console.log(`   🔑 Version hash: ${version}`);
+
+    // Check R2 for existing render (HEAD request)
+    const existsInR2 = await r2.exists({ tokenId, version, ext: 'png' });
+
+    if (existsInR2) {
+      // HIT: Redirect to CDN URL (immutable, cached)
+      const publicUrl = r2.buildPublicUrl({ tokenId, version, ext: 'png' });
+      console.log(`   ✅ R2 HIT: Redirecting to ${publicUrl}`);
+
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      return res.redirect(302, publicUrl);
+    }
+
+    // Check if client wants synchronous rendering (backwards compatible mode)
+    const waitForRender = req.query.wait === 'true';
+
+    // MISS: Check if already rendering
+    const isRendering = renderQueue.isInProgress({ tokenId, version });
+
+    if (isRendering && !waitForRender) {
+      // Already rendering, return 202 Accepted (unless wait=true)
+      console.log(`   ⏳ Already rendering, returning 202 Accepted`);
+      res.setHeader('Retry-After', '2');
+      return res.status(202).json({
+        status: 'rendering',
+        message: 'Render in progress, retry in 2 seconds',
+        tokenId,
+        version,
+        retryAfter: 2
+      });
+    }
+
+    // MISS + Not rendering: Enqueue render job
+    console.log(`   🎨 Enqueueing render job for ${tokenId}/${version} (wait=${waitForRender})`);
+
+    const renderPromise = renderQueue.enqueue({
+      tokenId,
+      version,
+      renderFn: async () => {
+        // Render the image
+        const files = layerFiles({ head, face, body, fur, background });
+        const png = await renderPNG({ files, size: 1000 });
+
+        // Upload to R2 with immutable cache headers
+        await r2.upload({ tokenId, version, buffer: png, ext: 'png' });
+
+        return png;
+      }
     });
 
-    console.log(`✅ Rendered ${cacheKey} (${png.length} bytes)`);
+    // BACKWARDS COMPATIBLE MODE: Wait for render to complete
+    if (waitForRender) {
+      try {
+        console.log(`   ⏳ Waiting for render to complete (backwards compatible mode)...`);
+        const png = await renderPromise;
 
-    res.setHeader('Content-Type', 'image/png');
-    res.setHeader('ETag', v);
-    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400, stale-while-revalidate=60');
-    res.send(png);
+        console.log(`   ✅ Render complete, serving image directly (${png.length} bytes)`);
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400');
+        return res.send(png);
+      } catch (err) {
+        console.error(`   ❌ Render failed:`, err);
+        return res.status(500).json({
+          error: 'Render failed',
+          message: err.message
+        });
+      }
+    }
+
+    // DEFAULT MODE: Return 202 Accepted immediately (don't block)
+    renderPromise.catch(err => {
+      console.error(`   ❌ Render job failed for ${tokenId}/${version}:`, err);
+    });
+
+    res.setHeader('Retry-After', '2');
+    res.status(202).json({
+      status: 'rendering',
+      message: 'Render job queued, retry in 2 seconds',
+      tokenId,
+      version,
+      retryAfter: 2
+    });
+
   } catch (err) {
     console.error('❌ Render error:', err);
-    // Return tiny transparent PNG on error
-    const empty = await sharp({
-      create: { width: 1, height: 1, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } }
-    }).png().toBuffer();
-    res.setHeader('Content-Type', 'image/png');
-    res.status(200).send(empty);
+    res.status(500).json({
+      error: 'Render failed',
+      message: err.message
+    });
   }
 });
 
