@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const sharp = require('sharp');
 const { LRUCache } = require('lru-cache');
 const compression = require('compression');
+const GIFEncoder = require('gif-encoder-2');
 const r2 = require('./r2-storage');
 const { renderQueue } = require('./render-queue');
 
@@ -306,11 +307,25 @@ async function fetchImage(url, retries = 3) {
   }
 }
 
+// Check if buffer is a GIF
+function isGIF(buffer) {
+  return buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46; // 'GIF'
+}
+
 // Composite PNG layers with sharp (from URLs)
 async function renderPNG({ urls, size = 1000 }) {
   // Fetch all layers concurrently
   const buffers = await Promise.all(urls.map(url => fetchImage(url)));
 
+  // Check if any layer is a GIF
+  const hasGIF = buffers.some(buf => isGIF(buf));
+
+  if (hasGIF) {
+    console.log(`   🎬 Detected GIF layers, using frame-by-frame compositing`);
+    return renderGIF({ buffers, size });
+  }
+
+  // Fast path: all PNGs
   // Resize all layers to the same size
   const inputs = await Promise.all(buffers.map(buf =>
     sharp(buf).resize(size, size, {
@@ -327,6 +342,102 @@ async function renderPNG({ urls, size = 1000 }) {
     .composite(inputs.map(buf => ({ input: buf, left: 0, top: 0 })))
     .png({ compressionLevel: 9, effort: 7, adaptiveFiltering: true })
     .toBuffer();
+}
+
+// Frame-accurate GIF compositing
+async function renderGIF({ buffers, size = 1000 }) {
+  // Extract frames from all layers
+  const layers = await Promise.all(buffers.map(async (buf) => {
+    if (isGIF(buf)) {
+      // Use sharp's GIF animation support
+      const image = sharp(buf);
+      const metadata = await image.metadata();
+
+      if (metadata.pages > 1) {
+        // Extract all frames
+        const frames = [];
+        for (let i = 0; i < metadata.pages; i++) {
+          const frameBuffer = await sharp(buf, { page: i })
+            .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+            .ensureAlpha()
+            .raw()
+            .toBuffer({ resolveWithObject: true });
+
+          frames.push({
+            data: frameBuffer.data,
+            delay: metadata.delay ? metadata.delay[i] || 100 : 100,
+            width: frameBuffer.info.width,
+            height: frameBuffer.info.height
+          });
+        }
+        return { frames, isAnimated: true };
+      }
+    }
+
+    // Static PNG or single-frame GIF
+    const resized = await sharp(buf)
+      .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    return {
+      frames: [{
+        data: resized.data,
+        delay: 100,
+        width: resized.info.width,
+        height: resized.info.height
+      }],
+      isAnimated: false
+    };
+  }));
+
+  // Find max frame count (for looping)
+  const maxFrames = Math.max(...layers.map(l => l.frames.length));
+  console.log(`   📹 Compositing ${maxFrames} frames across ${layers.length} layers`);
+
+  // Create GIF encoder
+  const encoder = new GIFEncoder(size, size, 'octree', true);
+  encoder.setQuality(10); // 1-20, lower is better
+  encoder.setRepeat(0); // 0 = loop forever
+  encoder.start();
+
+  // Composite each frame
+  for (let frameIdx = 0; frameIdx < maxFrames; frameIdx++) {
+    // Get frame from each layer (loop if layer has fewer frames)
+    const frameBuffers = await Promise.all(layers.map(async (layer, layerIdx) => {
+      const frame = layer.frames[frameIdx % layer.frames.length];
+      return frame.data;
+    }));
+
+    // Composite all layers for this frame
+    const compositeBuffers = await Promise.all(frameBuffers.map(async (buf, idx) => {
+      return sharp(buf, {
+        raw: {
+          width: size,
+          height: size,
+          channels: 4
+        }
+      }).png().toBuffer();
+    }));
+
+    const composited = await sharp({
+      create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } }
+    })
+      .composite(compositeBuffers.map(buf => ({ input: buf, left: 0, top: 0 })))
+      .raw()
+      .toBuffer();
+
+    // Get delay for this frame (use longest delay from any layer)
+    const delays = layers.map(l => l.frames[frameIdx % l.frames.length].delay);
+    const frameDelay = Math.max(...delays);
+
+    encoder.setDelay(frameDelay);
+    encoder.addFrame(composited);
+  }
+
+  encoder.finish();
+  return encoder.out.getData();
 }
 
 // Single-flight wrapper to coalesce concurrent requests
@@ -373,12 +484,17 @@ app.get('/render/:id', async (req, res) => {
 
     console.log(`   🔑 Version hash: ${version}`);
 
-    // Check R2 for existing render (HEAD request)
-    const existsInR2 = await r2.exists({ tokenId, version, ext: 'png' });
+    // Check R2 for existing render (try both .gif and .png)
+    let existingExt = null;
+    if (await r2.exists({ tokenId, version, ext: 'gif' })) {
+      existingExt = 'gif';
+    } else if (await r2.exists({ tokenId, version, ext: 'png' })) {
+      existingExt = 'png';
+    }
 
-    if (existsInR2) {
+    if (existingExt) {
       // HIT: Redirect to CDN URL (immutable, cached)
-      const publicUrl = r2.buildPublicUrl({ tokenId, version, ext: 'png' });
+      const publicUrl = r2.buildPublicUrl({ tokenId, version, ext: existingExt });
       console.log(`   ✅ R2 HIT: Redirecting to ${publicUrl}`);
 
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
@@ -414,12 +530,16 @@ app.get('/render/:id', async (req, res) => {
         // Render the image (fetch layers from R2 CDN)
         const urls = await layerUrls({ tokenId, head, face, body, fur, background });
         console.log(`   📦 Fetching layers:`, urls);
-        const png = await renderPNG({ urls, size: 1000 });
+        const imageBuffer = await renderPNG({ urls, size: 1000 });
+
+        // Detect if output is GIF or PNG
+        const ext = isGIF(imageBuffer) ? 'gif' : 'png';
+        console.log(`   💾 Uploading as .${ext}`);
 
         // Upload to R2 with immutable cache headers
-        await r2.upload({ tokenId, version, buffer: png, ext: 'png' });
+        await r2.upload({ tokenId, version, buffer: imageBuffer, ext });
 
-        return png;
+        return { buffer: imageBuffer, ext };
       }
     });
 
@@ -427,12 +547,12 @@ app.get('/render/:id', async (req, res) => {
     if (waitForRender) {
       try {
         console.log(`   ⏳ Waiting for render to complete (backwards compatible mode)...`);
-        const png = await renderPromise;
+        const result = await renderPromise;
 
-        console.log(`   ✅ Render complete, serving image directly (${png.length} bytes)`);
-        res.setHeader('Content-Type', 'image/png');
+        console.log(`   ✅ Render complete, serving image directly (${result.buffer.length} bytes)`);
+        res.setHeader('Content-Type', result.ext === 'gif' ? 'image/gif' : 'image/png');
         res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400');
-        return res.send(png);
+        return res.send(result.buffer);
       } catch (err) {
         console.error(`   ❌ Render failed:`, err);
         return res.status(500).json({
