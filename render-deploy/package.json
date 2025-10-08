@@ -15,10 +15,12 @@
     "dotenv": "^17.2.3",
     "ethers": "^6.8.0",
     "express": "^4.18.2",
+    "express-rate-limit": "^8.1.0",
     "gif-encoder-2": "^1.0.5",
     "lru-cache": "^11.2.2",
-    "p-limit": "^7.1.1",
-    "sharp": "^0.34.4"
+    "p-limit": "^6.2.0",
+    "sharp": "^0.34.4",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

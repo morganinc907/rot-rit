@@ -10,6 +10,8 @@ const compression = require('compression');
 const GIFEncoder = require('gif-encoder-2');
 const r2 = require('./r2-storage');
 const { renderQueue } = require('./render-queue');
+const rateLimit = require('express-rate-limit');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,6 +20,44 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 app.use(compression());
+
+// Request ID tracking for debugging
+app.use((req, res, next) => {
+  req.id = uuidv4();
+  res.setHeader('X-Request-ID', req.id);
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`[${req.id}] ${req.method} ${req.path} ${res.statusCode} ${duration}ms`);
+  });
+  next();
+});
+
+// Rate limiting to prevent abuse
+const metadataLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 100, // 100 requests per minute per IP
+  message: {
+    error: 'rate_limit_exceeded',
+    message: 'Too many requests, please try again later',
+    retryAfter: 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const renderLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20, // 20 render requests per minute per IP
+  message: {
+    error: 'rate_limit_exceeded',
+    message: 'Too many render requests, please slow down',
+    retryAfter: 60
+  }
+});
+
+app.use('/metadata', metadataLimiter);
+app.use('/render', renderLimiter);
 
 // Simple in-memory cache for metadata
 const cache = new Map();
@@ -32,6 +72,31 @@ const requestQueue = new Map();
 const MAX_CONCURRENT = 3; // Only 3 concurrent blockchain calls
 let activeRequests = 0;
 
+// Metrics tracking
+const metrics = {
+  requests: { total: 0, success: 0, error: 0, by_status: {} },
+  cache: { hits: 0, misses: 0 },
+  blockchain: { calls: 0, errors: 0 },
+  startTime: Date.now()
+};
+
+// Metrics middleware
+app.use((req, res, next) => {
+  metrics.requests.total++;
+  const originalSend = res.send;
+  res.send = function(data) {
+    metrics.requests.by_status[res.statusCode] =
+      (metrics.requests.by_status[res.statusCode] || 0) + 1;
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      metrics.requests.success++;
+    } else if (res.statusCode >= 400) {
+      metrics.requests.error++;
+    }
+    return originalSend.call(this, data);
+  };
+  next();
+});
+
 // R2 CDN URLs for traits/cosmetics
 const COSMETICS_CDN = process.env.COSMETICS_CDN || 'https://rotandritual.work';
 const BASE_TRAITS_PATH = 'traits';
@@ -42,6 +107,7 @@ const provider = new ethers.JsonRpcProvider('https://sepolia.base.org');
 
 // Contract addresses
 const RACCOON_RENDERER = "0x5c83B09AAb6ac95F1DFc9B6CEE66418D1D94d0fF";
+const COSMETICS_ADDRESS = "0x5D4E264c978860F2C73a689F414f302ad23dC5FB";
 
 // RaccoonRenderer ABI (just the tokenURI function)
 const RENDERER_ABI = [
@@ -54,13 +120,42 @@ const RENDERER_ABI = [
   }
 ];
 
+// CosmeticsV2 ABI (just the getEquippedCosmetics function)
+const COSMETICS_ABI = [
+  {
+    name: 'getEquippedCosmetics',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'raccoonId', type: 'uint256' }],
+    outputs: [{ name: '', type: 'uint256[5]' }]
+  }
+];
+
+// Metrics endpoint
+app.get('/metrics', (req, res) => {
+  const uptime = Date.now() - metrics.startTime;
+  res.json({
+    uptime: Math.floor(uptime / 1000), // seconds
+    requests: metrics.requests,
+    cache: {
+      ...metrics.cache,
+      hitRate: metrics.cache.hits / (metrics.cache.hits + metrics.cache.misses) || 0
+    },
+    blockchain: metrics.blockchain,
+    queue: renderQueue.getStats(),
+    memory: process.memoryUsage(),
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
     contracts: {
-      renderer: RACCOON_RENDERER
+      renderer: RACCOON_RENDERER,
+      cosmetics: COSMETICS_ADDRESS
     },
     r2: {
       enabled: !!process.env.R2_ACCOUNT_ID,
@@ -85,85 +180,155 @@ function releaseSlot() {
   console.log(`⚡ Active requests: ${activeRequests}/${MAX_CONCURRENT}`);
 }
 
-// Main metadata endpoint
-app.get('/raccoon/:tokenId', async (req, res) => {
+// NFT Marketplace Metadata endpoint - This is what OpenSea/wallets call
+app.get('/metadata/:id', async (req, res) => {
   try {
-    const { tokenId } = req.params;
-    const { cosmetics, chain } = req.query;
+    const tokenId = req.params.id;
 
-    console.log(`📍 Request for raccoon ${tokenId} with cosmetics=${cosmetics}, chain=${chain}`);
+    console.log(`📋 Metadata request for token ${tokenId}`);
 
-    // Validate inputs
+    // Validate token ID
     if (!tokenId || isNaN(tokenId)) {
       return res.status(400).json({ error: 'Invalid token ID' });
     }
 
-    if (!cosmetics || !ethers.isAddress(cosmetics)) {
-      return res.status(400).json({ error: 'Invalid cosmetics address' });
-    }
-
-    if (chain && chain !== '84532') {
-      return res.status(400).json({ error: 'Only Base Sepolia (84532) supported' });
-    }
-
     // Create cache key
-    const cacheKey = `${tokenId}-${cosmetics}-${chain || '84532'}`;
+    const cacheKey = `metadata:${tokenId}`;
 
     // Check cache first
     const cached = cache.get(cacheKey);
     if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
       console.log(`💾 Cache hit for ${cacheKey}`);
+      metrics.cache.hits++;
+
+      // ETag support even on cached responses
+      const etag = cached.version ? `"${cached.version}"` : undefined;
+      if (etag && req.headers['if-none-match'] === etag) {
+        console.log(`   ✅ ETag match on cache hit, returning 304`);
+        res.setHeader('ETag', etag);
+        res.setHeader('Cache-Control', 'public, max-age=60');
+        res.setHeader('X-Cache', 'HIT');
+        return res.status(304).end();
+      }
+
       res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Cache-Control', 'public, max-age=300');
+      res.setHeader('Cache-Control', 'public, max-age=60'); // Short cache for metadata (1 min)
       res.setHeader('X-Cache', 'HIT');
+      if (etag) res.setHeader('ETag', etag);
       return res.json(cached.data);
     }
 
-    // Wait for an available slot
+    // Cache miss
+    metrics.cache.misses++;
+
+    // Wait for available slot
     await waitForSlot(cacheKey);
 
     try {
-      // Call the RaccoonRenderer contract
-      const renderer = new ethers.Contract(RACCOON_RENDERER, RENDERER_ABI, provider);
+      // 1. Read equipped cosmetics from chain
+      const cosmetics = new ethers.Contract(COSMETICS_ADDRESS, COSMETICS_ABI, provider);
+      console.log(`🔍 Reading equipped cosmetics for token ${tokenId}...`);
 
-      console.log(`🔍 Calling renderer.tokenURI(${tokenId})`);
-      const startTime = Date.now();
+      metrics.blockchain.calls++;
+      const equipped = await cosmetics.getEquippedCosmetics(tokenId);
+      const equippedArray = equipped.map(id => Number(id)); // Convert BigInt to Number
+      console.log(`   Equipped: [${equippedArray.join(', ')}]`);
 
-      const tokenURI = await renderer.tokenURI(tokenId);
-      const duration = Date.now() - startTime;
-      console.log(`✅ Got tokenURI in ${duration}ms:`, tokenURI.substring(0, 100) + '...');
+      // 2. Compute version hash
+      const version = r2.versionHash({ tokenId: Number(tokenId), equipped: equippedArray });
+      console.log(`   Version hash: ${version}`);
 
-      // If it's a data URI, parse and return the JSON directly
-      if (tokenURI.startsWith('data:application/json;base64,')) {
-        const base64Data = tokenURI.split(',')[1];
-        const jsonData = Buffer.from(base64Data, 'base64').toString();
-        const metadata = JSON.parse(jsonData);
+      // 3. Get base metadata from IPFS
+      const ipfsUrl = `https://bafybeihn54iawusfxzqzkxzdcidkgejom22uhwpquqrdl5frmnwhilqi4m.ipfs.dweb.link/${tokenId}.json`;
+      const ipfsResponse = await fetch(ipfsUrl);
 
-        // Add some API metadata
-        metadata._generated = {
-          timestamp: new Date().toISOString(),
-          renderer: RACCOON_RENDERER,
-          tokenId: tokenId,
-          cosmetics: cosmetics,
-          chain: chain || '84532'
-        };
-
-        // Cache the result
-        cache.set(cacheKey, { data: metadata, timestamp: Date.now() });
-        console.log(`💾 Cached ${cacheKey}`);
-
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Cache-Control', 'public, max-age=300');
-        res.setHeader('X-Cache', 'MISS');
-        return res.json(metadata);
+      if (!ipfsResponse.ok) {
+        throw new Error(`Failed to fetch base metadata from IPFS: ${ipfsResponse.status}`);
       }
 
-      // If it's a regular URL, proxy it
-      res.redirect(tokenURI);
+      const baseMetadata = await ipfsResponse.json();
+
+      // 4. Determine image extension (check if render exists in R2)
+      let ext = 'png';
+      if (await r2.exists({ tokenId: Number(tokenId), version, ext: 'gif' })) {
+        ext = 'gif';
+      } else if (!await r2.exists({ tokenId: Number(tokenId), version, ext: 'png' })) {
+        // Image not rendered yet - default to png
+        ext = 'png';
+      }
+
+      // 5. Build immutable CDN URL
+      const imageUrl = r2.buildPublicUrl({ tokenId: Number(tokenId), version, ext });
+      console.log(`   📸 Image URL: ${imageUrl}`);
+
+      // 6. Build final metadata with immutable image URL
+      const metadata = {
+        name: baseMetadata.name || `Trash Raccoon #${tokenId}`,
+        description: baseMetadata.description || 'A member of the Rot and Ritual community',
+        image: imageUrl,
+        external_url: baseMetadata.external_url || `https://rotandritual.work/raccoon/${tokenId}`,
+        attributes: baseMetadata.attributes || [],
+        // Add cosmetic info to attributes if any equipped
+        ...(equippedArray.some(id => id !== 0) && {
+          cosmetics_equipped: equippedArray
+        })
+      };
+
+      // ETag based on version hash (for 304 Not Modified support)
+      const etag = `"${version}"`;
+
+      // Check if client has current version cached (ETag/304 support)
+      if (req.headers['if-none-match'] === etag) {
+        console.log(`   ✅ ETag match, returning 304 Not Modified`);
+        res.setHeader('ETag', etag);
+        res.setHeader('Cache-Control', 'public, max-age=60');
+        return res.status(304).end();
+      }
+
+      // Cache the result
+      cache.set(cacheKey, { data: metadata, timestamp: Date.now(), version });
+      console.log(`💾 Cached ${cacheKey}`);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'public, max-age=60'); // 1 minute cache
+      res.setHeader('ETag', etag); // Add ETag for client caching
+      res.setHeader('X-Cache', 'MISS');
+      return res.json(metadata);
 
     } finally {
       releaseSlot();
     }
+
+  } catch (error) {
+    console.error('❌ Error generating metadata:', error);
+    metrics.blockchain.errors++;
+    releaseSlot();
+
+    // Return error response
+    res.status(500).json({
+      error: 'Failed to generate metadata',
+      message: error.message,
+      tokenId: req.params.id,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Main metadata endpoint
+// Legacy endpoint - redirect to /metadata/:id which reads equipped cosmetics from chain
+app.get('/raccoon/:tokenId', async (req, res) => {
+  try {
+    const { tokenId } = req.params;
+
+    console.log(`📍 Legacy /raccoon/${tokenId} request - redirecting to /metadata/${tokenId}`);
+
+    // Validate token ID
+    if (!tokenId || isNaN(tokenId)) {
+      return res.status(400).json({ error: 'Invalid token ID' });
+    }
+
+    // Redirect to the metadata endpoint which reads equipped cosmetics from chain
+    return res.redirect(`/metadata/${tokenId}`);
 
   } catch (error) {
     console.error('❌ Error generating metadata:', error);
@@ -594,15 +759,61 @@ app.get('/static/:tokenId', (req, res) => {
   res.redirect(ipfsUrl);
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server with graceful shutdown support
+const server = app.listen(PORT, () => {
   console.log(`🚀 Raccoon Metadata API running on port ${PORT}`);
   console.log(`📍 Renderer contract: ${RACCOON_RENDERER}`);
+  console.log(`📍 Cosmetics contract: ${COSMETICS_ADDRESS}`);
   console.log(`🔗 Base Sepolia RPC: https://sepolia.base.org`);
   console.log(`\n📋 Endpoints:`);
   console.log(`   GET /health - Health check`);
-  console.log(`   GET /raccoon/:tokenId?cosmetics=0x...&chain=84532 - Dynamic metadata`);
+  console.log(`   GET /metrics - System metrics`);
+  console.log(`   GET /metadata/:id - NFT metadata (reads equipped cosmetics from chain)`);
+  console.log(`   GET /render/:id?head=X&face=X&body=X&fur=X&background=X - Render image (PRSS pattern)`);
+  console.log(`   GET /raccoon/:tokenId?cosmetics=0x...&chain=84532 - Dynamic metadata (legacy)`);
   console.log(`   GET /static/:tokenId - Static IPFS metadata`);
 });
+
+// Graceful shutdown
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
+
+async function gracefulShutdown(signal) {
+  console.log(`\n⚠️  ${signal} received, graceful shutdown starting...`);
+
+  // Stop accepting new requests
+  server.close(() => {
+    console.log('✅ HTTP server closed');
+  });
+
+  // Wait for in-flight renders to complete
+  const maxWait = 30000; // 30 seconds max
+  const startTime = Date.now();
+
+  console.log('⏳ Waiting for in-flight renders to complete...');
+
+  while (renderQueue.getStats().inProgress > 0) {
+    const elapsed = Date.now() - startTime;
+
+    if (elapsed > maxWait) {
+      console.log('⚠️  Force shutdown after 30s (some renders may be incomplete)');
+      break;
+    }
+
+    const remaining = renderQueue.getStats().inProgress;
+    console.log(`   ${remaining} renders remaining... (${Math.floor(elapsed / 1000)}s elapsed)`);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  console.log('✅ All renders complete');
+  console.log('📊 Final metrics:', {
+    uptime: Math.floor((Date.now() - metrics.startTime) / 1000),
+    requests: metrics.requests.total,
+    cacheHitRate: (metrics.cache.hits / (metrics.cache.hits + metrics.cache.misses) || 0).toFixed(2)
+  });
+  console.log('👋 Goodbye!');
+  process.exit(0);
+}
 
 module.exports = app;

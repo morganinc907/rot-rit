@@ -181,15 +181,10 @@ contract Raccoons is ERC721, ERC721Enumerable, ERC2981, Ownable, ReentrancyGuard
         if (cosmetics != address(0) && bytes(dynamicMetadataURI).length > 0) {
             // Safely check for equipped cosmetics
             if (_hasEquippedCosmetics(tokenId)) {
-                // Return dynamic metadata URL that includes cosmetics
+                // Return dynamic metadata URL (metadata API reads equipped cosmetics from chain)
                 return string(abi.encodePacked(
                     dynamicMetadataURI,
-                    "/raccoon/",
-                    _toString(tokenId),
-                    "?cosmetics=",
-                    _toHexString(uint160(cosmetics), 20),
-                    "&chain=",
-                    _toString(block.chainid)
+                    _toString(tokenId)
                 ));
             }
         }
