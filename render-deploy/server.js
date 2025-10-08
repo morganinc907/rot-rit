@@ -267,12 +267,25 @@ async function layerUrls({ tokenId, head = 0, face = 0, body = 0, fur = 0, backg
   return layers;
 }
 
-// Fetch image from URL with retry logic
+// Fetch image from URL with retry logic (tries .png, then .gif)
 async function fetchImage(url, retries = 3) {
+  // Try PNG first
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url);
       if (!response.ok) {
+        if (response.status === 404) {
+          // Try .gif extension instead
+          const gifUrl = url.replace(/\.png$/, '.gif');
+          if (gifUrl !== url) {
+            console.log(`   🔄 PNG not found, trying GIF: ${gifUrl}`);
+            const gifResponse = await fetch(gifUrl);
+            if (!gifResponse.ok) {
+              throw new Error(`Failed to fetch ${url} or ${gifUrl}: 404 Not Found`);
+            }
+            return Buffer.from(await gifResponse.arrayBuffer());
+          }
+        }
         if (i < retries - 1 && (response.status === 502 || response.status === 503)) {
           // Retry on server errors
           console.log(`   ⚠️  Retry ${i + 1}/${retries} for ${url} (${response.status})`);
